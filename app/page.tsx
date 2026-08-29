@@ -11,6 +11,7 @@ interface GalleryItem { url: string; caption: string }
 interface Business {
   id: number
   name: string
+  ownerName: string
   category: 'Makanan' | 'Kerajinan' | 'Jasa'
   description: string
   about: string
@@ -24,6 +25,11 @@ interface Business {
   image: string
   alt: string
   gallery: GalleryItem[]
+  linkShopee?: string
+  linkTokopedia?: string
+  linkInstagram?: string
+  linkFacebook?: string
+  linkGmaps?: string
 }
 
 type View =
@@ -42,6 +48,7 @@ const BUSINESSES: Business[] = [
   {
     id: 1,
     name: 'Warung Bu Sri Rejeki',
+    ownerName: 'Sri Rejeki',
     category: 'Makanan',
     description:
       'Warung makan rumahan dengan masakan Jawa otentik dan harga terjangkau untuk semua kalangan.',
@@ -62,10 +69,13 @@ const BUSINESSES: Business[] = [
       { url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop&auto=format', caption: 'Rawon Spesial' },
       { url: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop&auto=format', caption: 'Suasana Warung' },
     ],
+    linkInstagram: 'https://instagram.com/warungbusrirejeki',
+    linkGmaps: 'https://maps.google.com/?q=Warung+Bu+Sri+Rejeki+Mojopurno',
   },
   {
     id: 2,
     name: 'Depot Soto Pak Naryo',
+    ownerName: 'Naryo Sugiarto',
     category: 'Makanan',
     description:
       'Soto ayam kampung kuah bening dengan resep turun-temurun sejak 1990, khas Ngawi yang legendaris.',
@@ -86,10 +96,13 @@ const BUSINESSES: Business[] = [
       { url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop&auto=format', caption: 'Sambal & Koya' },
       { url: 'https://images.unsplash.com/photo-1565557702-b586b8813c73?w=400&h=300&fit=crop&auto=format', caption: 'Suasana Depot' },
     ],
+    linkFacebook: 'https://facebook.com/sotopaknaryongawi',
+    linkGmaps: 'https://maps.google.com/?q=Depot+Soto+Pak+Naryo+Wonoasri',
   },
   {
     id: 3,
     name: 'Kerajinan Anyaman Mba Surti',
+    ownerName: 'Surti Handayani',
     category: 'Kerajinan',
     description:
       'Anyaman bambu dan rotan berkualitas tinggi, cocok untuk dekorasi dan perabot rumah modern.',
@@ -110,10 +123,14 @@ const BUSINESSES: Business[] = [
       { url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop&auto=format', caption: 'Dekorasi Rotan' },
       { url: 'https://images.unsplash.com/photo-1567361808960-dec9cb578182?w=400&h=300&fit=crop&auto=format', caption: 'Proses Pengerjaan' },
     ],
+    linkShopee: 'https://shopee.co.id/anyaman_surti',
+    linkInstagram: 'https://instagram.com/anyamansurti',
+    linkGmaps: 'https://maps.google.com/?q=Kerajinan+Anyaman+Surti+Sambungrejo',
   },
   {
     id: 4,
     name: 'Batik Tulis Bumi Nusantara',
+    ownerName: 'Heru Widodo',
     category: 'Kerajinan',
     description:
       'Batik tulis tangan bermotif khas Ngawi dengan pewarna alami pilihan, tersedia custom order.',
@@ -134,10 +151,15 @@ const BUSINESSES: Business[] = [
       { url: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=400&h=300&fit=crop&auto=format', caption: 'Motif Khas Ngawi' },
       { url: 'https://images.unsplash.com/photo-1620503374956-c942862f0372?w=400&h=300&fit=crop&auto=format', caption: 'Pewarna Alami' },
     ],
+    linkShopee: 'https://shopee.co.id/batiknusantarangawi',
+    linkTokopedia: 'https://tokopedia.com/batiknusantara',
+    linkInstagram: 'https://instagram.com/batiknusantarangawi',
+    linkGmaps: 'https://maps.google.com/?q=Batik+Tulis+Bumi+Nusantara+Mojopurno',
   },
   {
     id: 5,
     name: 'Laundry Bersih Kilat',
+    ownerName: 'Agus Prasetyo',
     category: 'Jasa',
     description:
       'Layanan laundry profesional: cuci bersih, setrika rapi, dan antar-jemput ke rumah Anda.',
@@ -158,10 +180,13 @@ const BUSINESSES: Business[] = [
       { url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&auto=format', caption: 'Setrika Rapi' },
       { url: 'https://images.unsplash.com/photo-1543161949-1f9193812ce8?w=400&h=300&fit=crop&auto=format', caption: 'Pakaian Siap Ambil' },
     ],
+    linkInstagram: 'https://instagram.com/laundrybersihkilat',
+    linkGmaps: 'https://maps.google.com/?q=Laundry+Bersih+Kilat+Wonoasri',
   },
   {
     id: 6,
     name: 'Bengkel Motor Mas Agus',
+    ownerName: 'Agus Setiawan',
     category: 'Jasa',
     description:
       'Bengkel motor terpercaya untuk servis rutin hingga besar, teknisi berpengalaman 10+ tahun.',
@@ -182,6 +207,8 @@ const BUSINESSES: Business[] = [
       { url: 'https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=400&h=300&fit=crop&auto=format', caption: 'Pengecekan Mesin' },
       { url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&auto=format', caption: 'Sparepart' },
     ],
+    linkFacebook: 'https://facebook.com/bengkelmasagus',
+    linkGmaps: 'https://maps.google.com/?q=Bengkel+Motor+Mas+Agus+Sambungrejo',
   },
 ]
 
@@ -340,10 +367,26 @@ function StarRating({ rating, reviewCount, showCount = true }: { rating: number;
 
 /* ── Navbar ─────────────────────────────────────────────────── */
 function Navbar({ onRegister, onHome }: { onRegister: () => void; onHome: () => void }) {
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  const scrollTo = (id: string) => {
+    setMobileOpen(false)
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    else { onHome(); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 50) }
+  }
+
+  const NAV_LINKS = [
+    { label: 'Beranda',      action: () => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }); setMobileOpen(false) } },
+    { label: 'Direktori',   action: () => scrollTo('catalog-section') },
+    { label: 'Tentang Kami', action: () => scrollTo('footer-section') },
+  ]
+
   return (
     <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <button onClick={onHome} className="flex items-center gap-2 cursor-pointer">
+        {/* Logo */}
+        <button onClick={() => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="flex items-center gap-2 cursor-pointer">
           <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}>
             <StoreIcon cls="w-4 h-4 text-white" />
           </div>
@@ -352,9 +395,11 @@ function Navbar({ onRegister, onHome }: { onRegister: () => void; onHome: () => 
           </span>
         </button>
 
+        {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-          <button onClick={onHome} className="hover:text-[#8F845F] transition-colors cursor-pointer">Beranda</button>
-          <button onClick={onHome} className="hover:text-[#8F845F] transition-colors cursor-pointer">Direktori</button>
+          {NAV_LINKS.map(l => (
+            <button key={l.label} onClick={l.action} className="hover:text-[#8F845F] transition-colors cursor-pointer">{l.label}</button>
+          ))}
           <span className="text-slate-300">|</span>
           <button
             onClick={onRegister}
@@ -365,6 +410,7 @@ function Navbar({ onRegister, onHome }: { onRegister: () => void; onHome: () => 
           </button>
         </div>
 
+        {/* Mobile: register + hamburger */}
         <div className="flex md:hidden items-center gap-2">
           <button
             onClick={onRegister}
@@ -373,9 +419,41 @@ function Navbar({ onRegister, onHome }: { onRegister: () => void; onHome: () => 
           >
             + Daftar
           </button>
-          <button className="p-1 text-slate-500"><MenuIcon /></button>
+          <button
+            onClick={() => setMobileOpen(o => !o)}
+            className="p-1 text-slate-500 hover:text-[#8F845F] transition-colors cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <XIcon cls="w-6 h-6" /> : <MenuIcon />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile dropdown menu */}
+      {mobileOpen && (
+        <div className="md:hidden border-t border-slate-100 bg-white shadow-md">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
+            {NAV_LINKS.map(l => (
+              <button
+                key={l.label}
+                onClick={l.action}
+                className="text-left px-3 py-2.5 rounded-lg text-sm font-medium text-slate-700 hover:bg-[#F3F2EB] hover:text-[#8F845F] transition-colors cursor-pointer"
+              >
+                {l.label}
+              </button>
+            ))}
+            <div className="border-t border-slate-100 mt-1 pt-2">
+              <button
+                onClick={() => { setMobileOpen(false); onRegister() }}
+                className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer"
+                style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}
+              >
+                🏪 Daftarkan UMKM Saya
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   )
 }
@@ -538,10 +616,16 @@ function CTABanner({ onRegister }: { onRegister: () => void }) {
   )
 }
 
-/* ── Footer ─────────────────────────────────────────────────── */
+/* ── Footer ─────────────────────────────────────────── */
 function Footer({ onHome, onRegister }: { onHome: () => void; onRegister: () => void }) {
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id)
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    else { onHome(); setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 50) }
+  }
+
   return (
-    <footer className="bg-slate-900 text-slate-400">
+    <footer id="footer-section" style={{ backgroundColor: '#1C1812', color: '#A09880' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
@@ -557,10 +641,18 @@ function Footer({ onHome, onRegister }: { onHome: () => void; onRegister: () => 
           <div>
             <h4 className="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Navigasi</h4>
             <ul className="space-y-2.5 text-sm">
-              {['Beranda', 'Direktori UMKM', 'Tentang Kami'].map(l => (
-                <li key={l}><button onClick={onHome} className="hover:text-[#C5BFA0] transition-colors cursor-pointer">{l}</button></li>
-              ))}
-              <li><button onClick={onRegister} className="hover:text-[#C5BFA0] transition-colors cursor-pointer">Daftarkan UMKM</button></li>
+              <li>
+                <button onClick={() => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Beranda</button>
+              </li>
+              <li>
+                <button onClick={() => scrollTo('catalog-section')} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Direktori UMKM</button>
+              </li>
+              <li>
+                <button onClick={() => scrollTo('footer-section')} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Tentang Kami</button>
+              </li>
+              <li>
+                <button onClick={onRegister} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Daftarkan UMKM</button>
+              </li>
             </ul>
           </div>
 
@@ -578,11 +670,12 @@ function Footer({ onHome, onRegister }: { onHome: () => void; onRegister: () => 
             </div>
           </div>
         </div>
-        <div className="mt-10 pt-6 border-t border-slate-800 text-xs text-center text-slate-600">
+        <div className="mt-10 pt-6 text-xs text-center" style={{ borderTop: '1px solid #2E2920', color: '#6B6250' }}>
           &copy; {new Date().getFullYear()} Direktori UMKM Desa Mojopurno. Proyek Akademik — ADPL.
         </div>
       </div>
     </footer>
+
   )
 }
 
@@ -606,7 +699,7 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
       <Navbar onRegister={onRegister} onHome={onHome} />
       <HeroSection search={search} setSearch={setSearch} onRegister={onRegister} />
 
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
+      <main id="catalog-section" className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-display font-extrabold text-slate-900 text-2xl">Direktori UMKM</h2>
@@ -738,8 +831,14 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
               <CategoryBadge category={business.category} large />
               <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.name}</h1>
               <StarRating rating={business.rating} reviewCount={business.reviewCount} />
-              <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-3">
+              <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-2">
                 <MapPinIcon cls="w-4 h-4 text-slate-400" /> {business.location}
+              </div>
+              <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-1.5">
+                <svg className="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+                <span>Pemilik: <span className="font-medium text-slate-700">{business.ownerName}</span></span>
               </div>
             </div>
 
@@ -783,6 +882,60 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
                 </button>
               </div>
             </div>
+
+            {/* Social Media & Marketplace */}
+            {(business.linkShopee || business.linkTokopedia || business.linkInstagram || business.linkFacebook || business.linkGmaps) && (
+              <div className="bg-white rounded-2xl border border-slate-200 p-5">
+                <h3 className="font-semibold text-slate-900 text-sm mb-3">Media Sosial & Marketplace</h3>
+                <div className="space-y-2">
+                  {business.linkShopee && (
+                    <a href={business.linkShopee} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-all group"
+                    >
+                      <span className="text-lg">🛒</span>
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-orange-600">Shopee</span>
+                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                    </a>
+                  )}
+                  {business.linkTokopedia && (
+                    <a href={business.linkTokopedia} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-green-300 hover:bg-green-50 transition-all group"
+                    >
+                      <span className="text-lg">🏪</span>
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-green-700">Tokopedia</span>
+                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                    </a>
+                  )}
+                  {business.linkInstagram && (
+                    <a href={business.linkInstagram} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50 transition-all group"
+                    >
+                      <span className="text-lg">📸</span>
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-pink-600">Instagram</span>
+                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                    </a>
+                  )}
+                  {business.linkFacebook && (
+                    <a href={business.linkFacebook} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
+                    >
+                      <span className="text-lg">👥</span>
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600">Facebook</span>
+                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                    </a>
+                  )}
+                  {business.linkGmaps && (
+                    <a href={business.linkGmaps} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-red-300 hover:bg-red-50 transition-all group"
+                    >
+                      <span className="text-lg">📍</span>
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-red-600">Google Maps</span>
+                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -831,8 +984,25 @@ const CATEGORY_OPTIONS = [
   { value: 'Lainnya',   label: '📦  Lainnya'               },
 ]
 
-interface FormState  { nama: string; kategori: string; alamat: string; whatsapp: string }
-interface FormErrors { nama?: string; kategori?: string; alamat?: string; whatsapp?: string }
+interface FormState  {
+  nama: string
+  pemilik: string
+  kategori: string
+  alamat: string
+  whatsapp: string
+  linkShopee: string
+  linkTokopedia: string
+  linkInstagram: string
+  linkFacebook: string
+  linkGmaps: string
+}
+interface FormErrors {
+  nama?: string
+  pemilik?: string
+  kategori?: string
+  alamat?: string
+  whatsapp?: string
+}
 
 function StepIndicator({ current }: { current: number }) {
   const steps = ['Info Usaha', 'Lokasi & Kontak', 'Foto Produk']
@@ -890,7 +1060,10 @@ function SuccessState({ onBack }: { onBack: () => void }) {
 }
 
 function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
-  const [form, setForm] = useState<FormState>({ nama: '', kategori: '', alamat: '', whatsapp: '' })
+  const [form, setForm] = useState<FormState>({
+    nama: '', pemilik: '', kategori: '', alamat: '', whatsapp: '',
+    linkShopee: '', linkTokopedia: '', linkInstagram: '', linkFacebook: '', linkGmaps: ''
+  })
   const [errors, setErrors] = useState<FormErrors>({})
   const [files, setFiles] = useState<File[]>([])
   const [isDragOver, setIsDragOver] = useState(false)
@@ -898,7 +1071,7 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
   const [loading, setLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const currentStep = form.nama && form.kategori ? (form.alamat && form.whatsapp ? 2 : 1) : 0
+  const currentStep = form.nama && form.pemilik && form.kategori ? (form.alamat && form.whatsapp ? 2 : 1) : 0
 
   const update = (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm(p => ({ ...p, [field]: e.target.value }))
@@ -918,6 +1091,7 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
   const validate = (): boolean => {
     const e: FormErrors = {}
     if (!form.nama.trim() || form.nama.length < 3) e.nama = 'Nama usaha minimal 3 karakter'
+    if (!form.pemilik.trim() || form.pemilik.length < 3) e.pemilik = 'Nama pemilik minimal 3 karakter'
     if (!form.kategori) e.kategori = 'Pilih kategori usaha'
     if (!form.alamat.trim() || form.alamat.length < 15) e.alamat = 'Alamat minimal 15 karakter'
     const wa = form.whatsapp.replace(/\D/g, '')
@@ -971,6 +1145,11 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
                   {errors.nama && <p className="mt-1 text-xs text-red-600">{errors.nama}</p>}
                 </div>
                 <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="pemilik">Nama Pemilik <span className="text-red-500">*</span></label>
+                  <input id="pemilik" type="text" value={form.pemilik} onChange={update('pemilik')} placeholder="Nama lengkap pemilik usaha" className={inputClass(errors.pemilik)} />
+                  {errors.pemilik && <p className="mt-1 text-xs text-red-600">{errors.pemilik}</p>}
+                </div>
+                <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="kategori">Kategori Usaha <span className="text-red-500">*</span></label>
                   <select id="kategori" value={form.kategori} onChange={update('kategori')} className={inputClass(errors.kategori) + ' bg-white'}>
                     <option value="">Pilih kategori...</option>
@@ -1008,6 +1187,59 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
                     <input id="whatsapp" type="tel" value={form.whatsapp} onChange={update('whatsapp')} placeholder="812 3456 7890" className="flex-1 px-3 py-2.5 text-sm outline-none bg-transparent" />
                   </div>
                   {errors.whatsapp && <p className="mt-1 text-xs text-red-600">{errors.whatsapp}</p>}
+                </div>
+              </div>
+            </div>
+
+            <div className="border-t border-slate-100 mx-6" />
+
+            {/* §2.5 — Media Sosial & Marketplace (opsional) */}
+            <div className="p-6">
+              <h2 className="font-display font-bold text-slate-900 mb-1 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}>🔗</span>
+                Media Sosial & Marketplace
+              </h2>
+              <p className="text-xs text-slate-400 mb-4 ml-8">Opsional · Isi jika Anda memiliki akun di platform berikut</p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl w-7 text-center">🛒</span>
+                  <input
+                    id="linkShopee" type="url" value={form.linkShopee} onChange={update('linkShopee')}
+                    placeholder="https://shopee.co.id/tokoanda"
+                    className={inputClass() + ' flex-1'}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl w-7 text-center">🏪</span>
+                  <input
+                    id="linkTokopedia" type="url" value={form.linkTokopedia} onChange={update('linkTokopedia')}
+                    placeholder="https://tokopedia.com/tokoanda"
+                    className={inputClass() + ' flex-1'}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl w-7 text-center">📸</span>
+                  <input
+                    id="linkInstagram" type="url" value={form.linkInstagram} onChange={update('linkInstagram')}
+                    placeholder="https://instagram.com/akunanda"
+                    className={inputClass() + ' flex-1'}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl w-7 text-center">👥</span>
+                  <input
+                    id="linkFacebook" type="url" value={form.linkFacebook} onChange={update('linkFacebook')}
+                    placeholder="https://facebook.com/halamananda"
+                    className={inputClass() + ' flex-1'}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xl w-7 text-center">📍</span>
+                  <input
+                    id="linkGmaps" type="url" value={form.linkGmaps} onChange={update('linkGmaps')}
+                    placeholder="https://maps.google.com/?q=..."
+                    className={inputClass() + ' flex-1'}
+                  />
                 </div>
               </div>
             </div>
