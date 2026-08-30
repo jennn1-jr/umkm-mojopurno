@@ -346,7 +346,7 @@ function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => vo
     >
       <div className="relative h-48 overflow-hidden bg-slate-100">
         {business.foto_url ? (
-          <img src={business.foto_url} alt={`Foto ${business.nama_usaha}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <img src={business.foto_url} alt={`Foto ${business.nama_umkm}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400">
             <StoreIcon cls="w-12 h-12" />
@@ -357,7 +357,7 @@ function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => vo
 
       <div className="p-4 flex flex-col flex-1 gap-2">
         <h3 className="font-display font-bold text-slate-900 leading-snug transition-colors duration-200 group-hover:text-[#748C5D]">
-          {business.nama_usaha}
+          {business.nama_umkm}
         </h3>
         <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 flex-1">{business.deskripsi}</p>
         <div className="flex items-center gap-1.5 text-xs text-slate-400">
@@ -487,7 +487,7 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
 
   const filtered = businesses.filter(b => {
     const q = search.toLowerCase()
-    const matchSearch = !q || b.nama_usaha.toLowerCase().includes(q) || b.deskripsi?.toLowerCase().includes(q) || b.lokasi?.toLowerCase().includes(q)
+    const matchSearch = !q || b.nama_umkm.toLowerCase().includes(q) || b.deskripsi?.toLowerCase().includes(q) || b.lokasi?.toLowerCase().includes(q)
     const matchCat = activeFilter === 'Semua' || b.kategori === activeFilter
     return matchSearch && matchCat
   })
@@ -579,10 +579,10 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
   const [activeImg, setActiveImg] = useState(0)
   const [galleryActive, setGalleryActive] = useState(0)
 
-  const waUrl = `https://wa.me/${business.nomor_wa?.replace(/\D/g, '') ?? ''}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_usaha}.`)}`
+  const waUrl = `https://wa.me/${business.whatsapp?.replace(/\D/g, '') ?? ''}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_umkm}.`)}`
 
-  const gallery = business.gallery?.length 
-    ? business.gallery 
+  const gallery = business.fotos?.length 
+    ? business.fotos.map(url => ({ url, caption: 'Foto Produk' }))
     : [{ url: business.foto_url || 'https://via.placeholder.com/600x400?text=Tidak+Ada+Foto', caption: 'Foto Usaha' }]
 
   const prevGallery = () => setGalleryActive(i => (i - 1 + gallery.length) % gallery.length)
@@ -604,7 +604,7 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
             <ChevronRightIcon cls="w-3 h-3" />
             <button onClick={() => goTo({ page: 'catalog' })} className="hover:text-[#8F845F] cursor-pointer">Direktori</button>
             <ChevronRightIcon cls="w-3 h-3" />
-            <span className="text-slate-600 font-medium truncate max-w-[160px]">{business.nama_usaha}</span>
+            <span className="text-slate-600 font-medium truncate max-w-[160px]">{business.nama_umkm}</span>
           </div>
         </div>
       </nav>
@@ -633,7 +633,10 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
             {/* About */}
             <div className="mt-8 bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="font-display font-bold text-slate-900 text-lg mb-3">Tentang Bisnis</h2>
-              <p className="text-slate-600 leading-relaxed text-sm">{business.deskripsi}</p>
+              <p className="text-slate-600 leading-relaxed text-sm mb-4">{business.deskripsi}</p>
+              {business.tentang && (
+                <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-wrap">{business.tentang}</p>
+              )}
             </div>
           </div>
 
@@ -641,7 +644,7 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
           <div className="lg:sticky lg:top-24 space-y-4">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <CategoryBadge category={business.kategori} large />
-              <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_usaha}</h1>
+              <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_umkm}</h1>
               <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-2">
                 <MapPinIcon cls="w-4 h-4 text-slate-400" /> {business.lokasi}
               </div>
@@ -671,13 +674,13 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
                 <WhatsAppIcon cls="w-5 h-5" /> Hubungi Penjual (WhatsApp)
               </a>
               <div className="grid grid-cols-2 gap-2">
-                <a href={`tel:+${business.nomor_wa}`}
+                <a href={`tel:+${business.whatsapp}`}
                   className="flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl py-2.5 text-sm font-medium transition-all text-slate-700 hover:border-[#8F845F]/50 hover:text-[#8F845F]"
                 >
                   <PhoneIcon cls="w-4 h-4" /> Telepon
                 </a>
                 <button
-                  onClick={() => navigator.share?.({ title: business.nama_usaha, url: window.location.href })}
+                  onClick={() => navigator.share?.({ title: business.nama_umkm, url: window.location.href })}
                   className="flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl py-2.5 text-sm font-medium transition-all text-slate-700 hover:border-[#8F845F]/50 hover:text-[#8F845F] cursor-pointer"
                 >
                   <ShareIcon cls="w-4 h-4" /> Bagikan
@@ -793,6 +796,7 @@ interface FormState {
   nama: string
   pemilik: string
   kategori: string
+  deskripsi: string
   alamat: string
   whatsapp: string
   linkShopee: string
@@ -805,6 +809,7 @@ interface FormErrors {
   nama?: string
   pemilik?: string
   kategori?: string
+  deskripsi?: string
   alamat?: string
   whatsapp?: string
 }
@@ -866,7 +871,7 @@ function SuccessState({ onBack }: { onBack: () => void }) {
 
 function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
   const [form, setForm] = useState<FormState>({
-    nama: '', pemilik: '', kategori: '', alamat: '', whatsapp: '',
+    nama: '', pemilik: '', kategori: '', deskripsi: '', alamat: '', whatsapp: '',
     linkShopee: '', linkTokopedia: '', linkInstagram: '', linkFacebook: '', linkGmaps: ''
   })
   const [errors, setErrors] = useState<FormErrors>({})
@@ -886,7 +891,7 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
   const addFiles = useCallback((incoming: FileList | null) => {
     if (!incoming) return
     const imgs = Array.from(incoming).filter(f => f.type.startsWith('image/'))
-    setFiles(prev => [...prev, ...imgs].slice(0, 5))
+    setFiles(prev => [...prev, ...imgs])
   }, [])
 
   const handleDrop = (e: React.DragEvent) => {
@@ -898,6 +903,7 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
     if (!form.nama.trim() || form.nama.length < 3) e.nama = 'Nama usaha minimal 3 karakter'
     if (!form.pemilik.trim() || form.pemilik.length < 3) e.pemilik = 'Nama pemilik minimal 3 karakter'
     if (!form.kategori) e.kategori = 'Pilih kategori usaha'
+    if (!form.deskripsi.trim() || form.deskripsi.length < 10) e.deskripsi = 'Deskripsi minimal 10 karakter'
     if (!form.alamat.trim() || form.alamat.length < 15) e.alamat = 'Alamat minimal 15 karakter'
     const wa = form.whatsapp.replace(/\D/g, '')
     if (!wa || wa.length < 10) e.whatsapp = 'Nomor WhatsApp tidak valid (min 10 digit)'
@@ -908,21 +914,25 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
     e.preventDefault(); if (!validate()) return
     setLoading(true)
     
-    // Convert to UmkmPendingPayload format
-    const payload = {
-      nama_usaha: form.nama,
-      nama_pemilik: form.pemilik,
-      kategori: form.kategori as 'Makanan' | 'Kerajinan' | 'Jasa' | 'Pertanian' | 'Ternak' | 'Lainnya',
-      deskripsi: 'Deskripsi singkat belum diisi...', // Frontend form doesn't have deskripsi yet, use placeholder
-      lokasi: form.alamat.substring(0, 50), // Extract short location from address
-      alamat: form.alamat,
-      nomor_wa: form.whatsapp,
-      link_shopee: form.linkShopee || undefined,
-      link_tokopedia: form.linkTokopedia || undefined,
-      link_instagram: form.linkInstagram || undefined,
-      link_facebook: form.linkFacebook || undefined,
-      link_gmaps: form.linkGmaps || undefined,
-    }
+    // Create FormData payload
+    const payload = new FormData();
+    payload.append('nama_usaha', form.nama);
+    payload.append('nama_pemilik', form.pemilik);
+    payload.append('kategori', form.kategori);
+    payload.append('deskripsi', form.deskripsi);
+    payload.append('lokasi', form.alamat.substring(0, 50));
+    payload.append('alamat', form.alamat);
+    payload.append('nomor_wa', form.whatsapp);
+    if (form.linkShopee) payload.append('link_shopee', form.linkShopee);
+    if (form.linkTokopedia) payload.append('link_tokopedia', form.linkTokopedia);
+    if (form.linkInstagram) payload.append('link_instagram', form.linkInstagram);
+    if (form.linkFacebook) payload.append('link_facebook', form.linkFacebook);
+    if (form.linkGmaps) payload.append('link_gmaps', form.linkGmaps);
+
+    // Append photos if they exist
+    files.forEach((file) => {
+      payload.append('fotos[]', file);
+    });
 
     const result = await submitPendingUmkm(payload)
     setLoading(false)
@@ -936,6 +946,7 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
         if (result.errors.nama_usaha) backendErrors.nama = result.errors.nama_usaha[0]
         if (result.errors.nama_pemilik) backendErrors.pemilik = result.errors.nama_pemilik[0]
         if (result.errors.kategori) backendErrors.kategori = result.errors.kategori[0]
+        if (result.errors.deskripsi) backendErrors.deskripsi = result.errors.deskripsi[0]
         if (result.errors.alamat) backendErrors.alamat = result.errors.alamat[0]
         if (result.errors.nomor_wa) backendErrors.whatsapp = result.errors.nomor_wa[0]
         setErrors(backendErrors)
@@ -997,6 +1008,14 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
                     {CATEGORY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                   </select>
                   {errors.kategori && <p className="mt-1 text-xs text-red-600">{errors.kategori}</p>}
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="deskripsi">Deskripsi Singkat <span className="text-red-500">*</span></label>
+                    <span className="text-xs text-slate-400">{form.deskripsi.length}/500</span>
+                  </div>
+                  <textarea id="deskripsi" rows={3} value={form.deskripsi} onChange={update('deskripsi')} maxLength={500} placeholder="Jelaskan secara singkat mengenai produk atau jasa yang Anda tawarkan..." className={inputClass(errors.deskripsi) + ' resize-none'} />
+                  {errors.deskripsi && <p className="mt-1 text-xs text-red-600">{errors.deskripsi}</p>}
                 </div>
               </div>
             </div>
@@ -1093,22 +1112,22 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
                 <span className="w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}>3</span>
                 Foto Produk
               </h2>
-              <p className="text-xs text-slate-400 mb-4 ml-8">Opsional · Maks. 5 foto · Format JPG, PNG, WEBP</p>
+              <p className="text-xs text-slate-400 mb-4 ml-8">Opsional · Format JPG, PNG, WEBP</p>
 
               <div
                 onDragOver={e => { e.preventDefault(); setIsDragOver(true) }}
                 onDragLeave={() => setIsDragOver(false)}
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${isDragOver ? 'scale-[1.01]' : files.length >= 5 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer ${isDragOver ? 'scale-[1.01]' : ''}`}
                 style={isDragOver ? { borderColor: '#748C5D', backgroundColor: '#F3F2EB' } : { borderColor: '#D4CEBC', backgroundColor: '#FAFAF8' }}
               >
                 {isDragOver ? (
                   <><UploadIcon cls="w-10 h-10 mx-auto mb-2" style={{ color: '#748C5D' } as React.CSSProperties} /><p className="font-semibold text-sm" style={{ color: '#748C5D' }}>Lepaskan file di sini</p></>
                 ) : (
-                  <><ImageIcon cls="w-10 h-10 text-slate-400 mx-auto mb-2" /><p className="text-slate-600 text-sm font-medium mb-1">Drag &amp; drop foto ke sini</p><p className="text-slate-400 text-xs">atau klik untuk pilih dari galeri</p>{files.length > 0 && <p className="text-xs mt-2 font-medium" style={{ color: '#748C5D' }}>{files.length}/5 foto dipilih</p>}</>
+                  <><ImageIcon cls="w-10 h-10 text-slate-400 mx-auto mb-2" /><p className="text-slate-600 text-sm font-medium mb-1">Drag &amp; drop foto ke sini</p><p className="text-slate-400 text-xs">atau klik untuk pilih dari galeri</p>{files.length > 0 && <p className="text-xs mt-2 font-medium" style={{ color: '#748C5D' }}>{files.length} foto dipilih</p>}</>
                 )}
-                <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={e => addFiles(e.target.files)} disabled={files.length >= 5} />
+                <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={e => addFiles(e.target.files)} />
               </div>
 
               {files.length > 0 && (

@@ -3,7 +3,7 @@
 // ==============================================
 import type { Umkm, ApiResponse, Kategori, UmkmPendingPayload } from "./types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
 
 /**
  * Fetch the list of published UMKM entries from the API.
@@ -39,7 +39,7 @@ export async function fetchUmkmList(params?: {
     return json.data ?? [];
   } catch (error) {
     // API is unreachable — return empty so the UI still renders
-    console.error("Failed to fetch UMKM list:", error);
+    console.warn("Failed to fetch UMKM list:", error);
     return [];
   }
 }
@@ -59,7 +59,7 @@ export async function fetchUmkmById(id: number): Promise<Umkm | null> {
     const json: ApiResponse<Umkm> = await res.json();
     return json.data ?? null;
   } catch {
-    console.error(`Failed to fetch UMKM #${id}`);
+    console.warn(`Failed to fetch UMKM #${id}`);
     return null;
   }
 }
@@ -69,16 +69,15 @@ export async function fetchUmkmById(id: number): Promise<Umkm | null> {
  * Only an Admin (via the Laravel backend) can approve and publish it.
  */
 export async function submitPendingUmkm(
-  payload: UmkmPendingPayload
+  payload: FormData
 ): Promise<{ success: boolean; message: string; errors?: Record<string, string[]> }> {
   try {
     const res = await fetch(`${BASE_URL}/api/umkm/pending`, {
       method: "POST",
       headers: { 
-        "Content-Type": "application/json",
         "Accept": "application/json"
       },
-      body: JSON.stringify(payload),
+      body: payload,
     });
 
     const json = await res.json();

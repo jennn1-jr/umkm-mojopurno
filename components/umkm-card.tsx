@@ -4,18 +4,27 @@ const BADGE_STYLE: Record<Kategori, string> = {
   Makanan:   "bg-[#FFF5E6] text-[#A0622A] border-[#F5DEC2]",
   Kerajinan: "bg-[#F0F4EC] text-[#4E6E3A] border-[#C9DAB8]",
   Jasa:      "bg-[#F2F0E8] text-[#8F845F] border-[#D9D4C0]",
+  Pertanian: "bg-[#E6F4EA] text-[#2E7D32] border-[#A5D6A7]",
+  Ternak:    "bg-[#FCE4EC] text-[#C2185B] border-[#F48FB1]",
+  Lainnya:   "bg-[#F5F5F5] text-[#616161] border-[#E0E0E0]",
 };
 
 const BADGE_ICON: Record<Kategori, string> = {
   Makanan:   "🍽️",
   Kerajinan: "🎨",
   Jasa:      "⚡",
+  Pertanian: "🌾",
+  Ternak:    "🐄",
+  Lainnya:   "📦",
 };
 
 const PHOTO_GRADIENT: Record<Kategori, string> = {
   Makanan:   "from-amber-200 to-orange-300",
   Kerajinan: "from-[#C9DAB8] to-[#748C5D]",
   Jasa:      "from-[#D9D4C0] to-[#8F845F]",
+  Pertanian: "from-green-200 to-emerald-400",
+  Ternak:    "from-pink-200 to-rose-400",
+  Lainnya:   "from-gray-200 to-slate-400",
 };
 
 interface UmkmCardProps {
@@ -23,8 +32,8 @@ interface UmkmCardProps {
 }
 
 export default function UmkmCard({ umkm }: UmkmCardProps) {
-  const waUrl = `https://wa.me/${umkm.nomor_wa?.replace(/\D/g, "") ?? ""}?text=${encodeURIComponent(
-    `Halo, saya tertarik dengan ${umkm.nama_usaha}.`
+  const waUrl = `https://wa.me/${umkm.whatsapp?.replace(/\D/g, "") ?? ""}?text=${encodeURIComponent(
+    `Halo, saya tertarik dengan ${umkm.nama_umkm}.`
   )}`;
 
   return (
@@ -40,7 +49,7 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={umkm.foto_url}
-            alt={`Foto ${umkm.nama_usaha}`}
+            alt={`Foto ${umkm.nama_umkm}`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
@@ -68,7 +77,7 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
         {/* Name */}
         <h3 className="font-bold text-base text-[#2C2A24] leading-snug line-clamp-2
                        group-hover:text-[#748C5D] transition-colors duration-200">
-          {umkm.nama_usaha}
+          {umkm.nama_umkm}
         </h3>
 
         {/* Description */}

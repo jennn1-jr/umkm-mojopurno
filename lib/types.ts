@@ -2,15 +2,16 @@ export type Kategori = "Makanan" | "Kerajinan" | "Jasa" | "Pertanian" | "Ternak"
 
 export interface Umkm {
   id: number;
-  nama_usaha: string;
+  nama_umkm: string;
   nama_pemilik?: string;
   kategori: Kategori;
   deskripsi: string;
+  tentang?: string;
   lokasi: string;
   alamat?: string;
-  nomor_wa: string;
+  whatsapp: string;
   foto_url?: string | null;
-  gallery?: { url: string; caption: string }[];
+  fotos?: string[];
   link_shopee?: string;
   link_tokopedia?: string;
   link_instagram?: string;
