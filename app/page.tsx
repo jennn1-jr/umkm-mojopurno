@@ -1,216 +1,24 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
+import { submitPendingUmkm, fetchUmkmList } from '@/lib/api'
+import type { Umkm, Kategori } from '@/lib/types'
 
 // ═══════════════════════════════════════════════════════════════
 // 1.  TYPES
 // ═══════════════════════════════════════════════════════════════
 
-interface GalleryItem { url: string; caption: string }
-
-interface Business {
-  id: number
-  name: string
-  ownerName: string
-  category: 'Makanan' | 'Kerajinan' | 'Jasa'
-  description: string
-  about: string
-  location: string
-  address: string
-  phone: string
-  hours: string
-  hoursNote: string
-  rating: number
-  reviewCount: number
-  image: string
-  alt: string
-  gallery: GalleryItem[]
-  linkShopee?: string
-  linkTokopedia?: string
-  linkInstagram?: string
-  linkFacebook?: string
-  linkGmaps?: string
-}
-
 type View =
   | { page: 'catalog' }
-  | { page: 'detail'; business: Business }
+  | { page: 'detail'; business: Umkm }
   | { page: 'form' }
 
 // ═══════════════════════════════════════════════════════════════
-// 2.  DUMMY DATA
+// 2.  CONSTANTS
 // ═══════════════════════════════════════════════════════════════
 
 // Foto Gunung Lawu — foto asli dari pengguna (disimpan di /public)
 const HERO_BG = '/hero-gunung-lawu.png'
-
-const BUSINESSES: Business[] = [
-  {
-    id: 1,
-    name: 'Warung Bu Sri Rejeki',
-    ownerName: 'Sri Rejeki',
-    category: 'Makanan',
-    description:
-      'Warung makan rumahan dengan masakan Jawa otentik dan harga terjangkau untuk semua kalangan.',
-    about:
-      'Warung Bu Sri Rejeki berdiri sejak tahun 2005, menyajikan cita rasa masakan Jawa tradisional yang kaya akan rempah pilihan. Menu andalan kami adalah nasi pecel, rawon, dan berbagai lauk pauk rumahan yang dimasak segar setiap harinya. Semua bahan baku dipilih langsung setiap pagi dari pasar Ngawi untuk menjamin kesegaran dan kualitas terbaik. Kami melayani makan di tempat maupun takeaway dengan porsi memuaskan dan harga yang sangat bersahabat.',
-    location: 'Dusun Krajan, Mojopurno',
-    address: 'Jl. Raya Mojopurno No. 12, Dusun Krajan, Kec. Ngawi, Kab. Ngawi 63253',
-    phone: '6281234567890',
-    hours: 'Senin – Sabtu: 07.00 – 20.00 WIB',
-    hoursNote: 'Minggu: 07.00 – 15.00 WIB',
-    rating: 4.8,
-    reviewCount: 124,
-    image: 'https://images.unsplash.com/photo-1546548770-e98d31aaafe1?w=480&h=288&fit=crop&auto=format',
-    alt: 'Masakan Jawa di Warung Bu Sri Rejeki',
-    gallery: [
-      { url: 'https://images.unsplash.com/photo-1546548770-e98d31aaafe1?w=400&h=300&fit=crop&auto=format', caption: 'Menu Andalan' },
-      { url: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=300&fit=crop&auto=format', caption: 'Nasi Pecel' },
-      { url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop&auto=format', caption: 'Rawon Spesial' },
-      { url: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?w=400&h=300&fit=crop&auto=format', caption: 'Suasana Warung' },
-    ],
-    linkInstagram: 'https://instagram.com/warungbusrirejeki',
-    linkGmaps: 'https://maps.google.com/?q=Warung+Bu+Sri+Rejeki+Mojopurno',
-  },
-  {
-    id: 2,
-    name: 'Depot Soto Pak Naryo',
-    ownerName: 'Naryo Sugiarto',
-    category: 'Makanan',
-    description:
-      'Soto ayam kampung kuah bening dengan resep turun-temurun sejak 1990, khas Ngawi yang legendaris.',
-    about:
-      'Depot Soto Pak Naryo adalah warung soto legendaris yang telah berdiri sejak 1990 dengan resep autentik turun-temurun. Kami menggunakan ayam kampung asli yang dimasak perlahan dengan kuah bening khas kaya rempah pilihan. Setiap mangkok disajikan dengan pelengkap lengkap: koya, perkedel, dan sambal matah yang menyegarkan. Dipercaya oleh ribuan pelanggan setia selama lebih dari 30 tahun, kami terus menjaga cita rasa yang membuat pelanggan selalu rindu kembali.',
-    location: 'Dusun Wonoasri, Mojopurno',
-    address: 'Jl. Wonoasri Raya No. 5, Dusun Wonoasri, Kec. Ngawi, Kab. Ngawi 63254',
-    phone: '6281345678901',
-    hours: 'Setiap Hari: 06.00 – 14.00 WIB',
-    hoursNote: 'Hari Minggu sering habis lebih cepat',
-    rating: 4.9,
-    reviewCount: 237,
-    image: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=480&h=288&fit=crop&auto=format',
-    alt: 'Soto Ayam Kampung Pak Naryo',
-    gallery: [
-      { url: 'https://images.unsplash.com/photo-1569050467447-ce54b3bbc37d?w=400&h=300&fit=crop&auto=format', caption: 'Soto Ayam' },
-      { url: 'https://images.unsplash.com/photo-1476718406336-bb5a9690ee2a?w=400&h=300&fit=crop&auto=format', caption: 'Pelengkap Soto' },
-      { url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop&auto=format', caption: 'Sambal & Koya' },
-      { url: 'https://images.unsplash.com/photo-1565557702-b586b8813c73?w=400&h=300&fit=crop&auto=format', caption: 'Suasana Depot' },
-    ],
-    linkFacebook: 'https://facebook.com/sotopaknaryongawi',
-    linkGmaps: 'https://maps.google.com/?q=Depot+Soto+Pak+Naryo+Wonoasri',
-  },
-  {
-    id: 3,
-    name: 'Kerajinan Anyaman Mba Surti',
-    ownerName: 'Surti Handayani',
-    category: 'Kerajinan',
-    description:
-      'Anyaman bambu dan rotan berkualitas tinggi, cocok untuk dekorasi dan perabot rumah modern.',
-    about:
-      'Kerajinan Anyaman Mba Surti telah menghasilkan produk anyaman berkualitas tinggi selama lebih dari 15 tahun. Kami menggunakan bahan baku bambu dan rotan pilihan yang dipanen secara bertanggung jawab dari hutan lokal di sekitar Ngawi. Setiap produk dikerjakan dengan tangan oleh pengrajin terampil menggunakan teknik anyaman tradisional yang diwariskan turun-temurun. Koleksi kami mencakup keranjang, tempat buah, furniture ringan, hingga aksesori dekorasi rumah yang elegan dan bernilai seni tinggi.',
-    location: 'Dusun Sambungrejo, Mojopurno',
-    address: 'Jl. Sambungrejo No. 8, Dusun Sambungrejo, Kec. Ngawi, Kab. Ngawi 63255',
-    phone: '6281456789012',
-    hours: 'Senin – Jumat: 08.00 – 17.00 WIB',
-    hoursNote: 'Sabtu: 08.00 – 14.00 WIB · Minggu libur',
-    rating: 4.7,
-    reviewCount: 89,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=480&h=288&fit=crop&auto=format',
-    alt: 'Kerajinan Anyaman Bambu Mba Surti',
-    gallery: [
-      { url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&auto=format', caption: 'Koleksi Anyaman' },
-      { url: 'https://images.unsplash.com/photo-1481437156560-3205f6a55735?w=400&h=300&fit=crop&auto=format', caption: 'Keranjang Bambu' },
-      { url: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=300&fit=crop&auto=format', caption: 'Dekorasi Rotan' },
-      { url: 'https://images.unsplash.com/photo-1567361808960-dec9cb578182?w=400&h=300&fit=crop&auto=format', caption: 'Proses Pengerjaan' },
-    ],
-    linkShopee: 'https://shopee.co.id/anyaman_surti',
-    linkInstagram: 'https://instagram.com/anyamansurti',
-    linkGmaps: 'https://maps.google.com/?q=Kerajinan+Anyaman+Surti+Sambungrejo',
-  },
-  {
-    id: 4,
-    name: 'Batik Tulis Bumi Nusantara',
-    ownerName: 'Heru Widodo',
-    category: 'Kerajinan',
-    description:
-      'Batik tulis tangan bermotif khas Ngawi dengan pewarna alami pilihan, tersedia custom order.',
-    about:
-      'Batik Tulis Bumi Nusantara berkomitmen melestarikan seni batik tulis tradisional dengan sentuhan modern yang elegan. Setiap kain dikerjakan sepenuhnya dengan tangan menggunakan canting dan malam, menghasilkan motif yang unik dan tidak pernah sama. Kami menggunakan pewarna alami berbasis tanaman yang ramah lingkungan dan aman bagi kesehatan. Tersedia motif khas Ngawi seperti motif padi, gunung, dan ornamen budaya lokal, serta layanan custom order untuk pernikahan, seragam kantor, atau hadiah eksklusif.',
-    location: 'Dusun Krajan, Mojopurno',
-    address: 'Jl. Raya Mojopurno No. 45, Dusun Krajan, Kec. Ngawi, Kab. Ngawi 63253',
-    phone: '6281567890123',
-    hours: 'Senin – Sabtu: 09.00 – 18.00 WIB',
-    hoursNote: 'Minggu hanya custom order (by appointment)',
-    rating: 4.9,
-    reviewCount: 156,
-    image: 'https://images.unsplash.com/photo-1583922606661-9b5b1e1bdb56?w=480&h=288&fit=crop&auto=format',
-    alt: 'Batik Tulis Khas Ngawi Bumi Nusantara',
-    gallery: [
-      { url: 'https://images.unsplash.com/photo-1583922606661-9b5b1e1bdb56?w=400&h=300&fit=crop&auto=format', caption: 'Koleksi Batik' },
-      { url: 'https://images.unsplash.com/photo-1576616977887-6b8cdf6c2cd0?w=400&h=300&fit=crop&auto=format', caption: 'Proses Membatik' },
-      { url: 'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=400&h=300&fit=crop&auto=format', caption: 'Motif Khas Ngawi' },
-      { url: 'https://images.unsplash.com/photo-1620503374956-c942862f0372?w=400&h=300&fit=crop&auto=format', caption: 'Pewarna Alami' },
-    ],
-    linkShopee: 'https://shopee.co.id/batiknusantarangawi',
-    linkTokopedia: 'https://tokopedia.com/batiknusantara',
-    linkInstagram: 'https://instagram.com/batiknusantarangawi',
-    linkGmaps: 'https://maps.google.com/?q=Batik+Tulis+Bumi+Nusantara+Mojopurno',
-  },
-  {
-    id: 5,
-    name: 'Laundry Bersih Kilat',
-    ownerName: 'Agus Prasetyo',
-    category: 'Jasa',
-    description:
-      'Layanan laundry profesional: cuci bersih, setrika rapi, dan antar-jemput ke rumah Anda.',
-    about:
-      'Laundry Bersih Kilat hadir sebagai solusi lengkap untuk kebutuhan laundry harian Anda. Kami menggunakan mesin cuci berkapasitas besar dengan deterjen premium yang lembut namun ampuh mengatasi noda membandel. Layanan meliputi cuci kilat 24 jam, cuci reguler, setrika, dry cleaning, dan laundry pakaian bayi dengan deterjen khusus. Tersedia layanan antar-jemput gratis radius 3 km. Kepuasan pelanggan adalah prioritas utama kami.',
-    location: 'Dusun Wonoasri, Mojopurno',
-    address: 'Jl. Wonoasri Raya No. 22, Dusun Wonoasri, Kec. Ngawi, Kab. Ngawi 63254',
-    phone: '6281678901234',
-    hours: 'Senin – Sabtu: 08.00 – 20.00 WIB',
-    hoursNote: 'Minggu: 08.00 – 17.00 WIB',
-    rating: 4.6,
-    reviewCount: 78,
-    image: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=480&h=288&fit=crop&auto=format',
-    alt: 'Laundry Bersih Kilat Mojopurno',
-    gallery: [
-      { url: 'https://images.unsplash.com/photo-1582735689369-4fe89db7114c?w=400&h=300&fit=crop&auto=format', caption: 'Area Cuci' },
-      { url: 'https://images.unsplash.com/photo-1545173168-9f1947eebb7f?w=400&h=300&fit=crop&auto=format', caption: 'Mesin Cuci' },
-      { url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&auto=format', caption: 'Setrika Rapi' },
-      { url: 'https://images.unsplash.com/photo-1543161949-1f9193812ce8?w=400&h=300&fit=crop&auto=format', caption: 'Pakaian Siap Ambil' },
-    ],
-    linkInstagram: 'https://instagram.com/laundrybersihkilat',
-    linkGmaps: 'https://maps.google.com/?q=Laundry+Bersih+Kilat+Wonoasri',
-  },
-  {
-    id: 6,
-    name: 'Bengkel Motor Mas Agus',
-    ownerName: 'Agus Setiawan',
-    category: 'Jasa',
-    description:
-      'Bengkel motor terpercaya untuk servis rutin hingga besar, teknisi berpengalaman 10+ tahun.',
-    about:
-      'Bengkel Motor Mas Agus telah dipercaya ribuan pelanggan di Kecamatan Ngawi sejak 2012. Tim teknisi berpengalaman 10+ tahun kami siap menangani berbagai jenis sepeda motor dari semua merek. Layanan mencakup servis rutin, ganti oli, tune-up, perbaikan mesin, penggantian sparepart, hingga pengecatan bodi. Kami hanya menggunakan sparepart original dan semi-original berkualitas dengan harga transparan dan terjangkau. Kepercayaan pelanggan adalah aset terbesar kami.',
-    location: 'Dusun Sambungrejo, Mojopurno',
-    address: 'Jl. Sambungrejo No. 15, Dusun Sambungrejo, Kec. Ngawi, Kab. Ngawi 63255',
-    phone: '6281789012345',
-    hours: 'Senin – Sabtu: 08.00 – 17.00 WIB',
-    hoursNote: 'Minggu: Tutup',
-    rating: 4.7,
-    reviewCount: 103,
-    image: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=480&h=288&fit=crop&auto=format',
-    alt: 'Bengkel Motor Mas Agus Mojopurno',
-    gallery: [
-      { url: 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=400&h=300&fit=crop&auto=format', caption: 'Area Bengkel' },
-      { url: 'https://images.unsplash.com/photo-1609630699906-87ec1ba96cce?w=400&h=300&fit=crop&auto=format', caption: 'Servis Motor' },
-      { url: 'https://images.unsplash.com/photo-1615906655593-ad0386982a0f?w=400&h=300&fit=crop&auto=format', caption: 'Pengecekan Mesin' },
-      { url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop&auto=format', caption: 'Sparepart' },
-    ],
-    linkFacebook: 'https://facebook.com/bengkelmasagus',
-    linkGmaps: 'https://maps.google.com/?q=Bengkel+Motor+Mas+Agus+Sambungrejo',
-  },
-]
 
 // ═══════════════════════════════════════════════════════════════
 // 3.  ICON COMPONENTS (inline SVG)
@@ -247,13 +55,6 @@ function ArrowLeftIcon({ cls = 'w-5 h-5' }: { cls?: string }) {
     </svg>
   )
 }
-function ClockIcon({ cls = 'w-5 h-5' }: { cls?: string }) {
-  return (
-    <svg className={cls} {...iP}>
-      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-  )
-}
 function PhoneIcon({ cls = 'w-5 h-5', style }: { cls?: string; style?: React.CSSProperties }) {
   return (
     <svg className={cls} style={style} {...iP}>
@@ -268,13 +69,7 @@ function ShareIcon({ cls = 'w-5 h-5' }: { cls?: string }) {
     </svg>
   )
 }
-function StarIcon({ filled = true, cls = 'w-4 h-4' }: { filled?: boolean; cls?: string }) {
-  return (
-    <svg className={cls} viewBox="0 0 24 24" fill={filled ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={filled ? 0 : 1.5} xmlns="http://www.w3.org/2000/svg">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
-    </svg>
-  )
-}
+
 function WhatsAppIcon({ cls = 'w-5 h-5' }: { cls?: string }) {
   return (
     <svg className={cls} viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -331,9 +126,9 @@ function ChevronRightIcon({ cls = 'w-5 h-5' }: { cls?: string }) {
 
 // ── Warna kategori tetap distingktif per jenis usaha ──────────
 const CATEGORY_STYLE: Record<string, string> = {
-  Makanan:   'bg-amber-100 text-amber-700 ring-amber-200',
+  Makanan: 'bg-amber-100 text-amber-700 ring-amber-200',
   Kerajinan: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
-  Jasa:      'bg-violet-100 text-violet-700 ring-violet-200',
+  Jasa: 'bg-violet-100 text-violet-700 ring-violet-200',
 }
 const CATEGORY_EMOJI: Record<string, string> = {
   Makanan: '🍽️', Kerajinan: '🎨', Jasa: '⚡',
@@ -348,18 +143,6 @@ function CategoryBadge({ category, large = false }: { category: string; large?: 
   )
 }
 
-function StarRating({ rating, reviewCount, showCount = true }: { rating: number; reviewCount: number; showCount?: boolean }) {
-  const full = Math.floor(rating)
-  return (
-    <div className="flex items-center gap-1.5">
-      <div className="flex text-amber-400">
-        {[1,2,3,4,5].map(i => <StarIcon key={i} filled={i <= full} cls="w-4 h-4" />)}
-      </div>
-      <span className="text-sm font-semibold text-slate-700">{rating.toFixed(1)}</span>
-      {showCount && <span className="text-sm text-slate-400">({reviewCount} ulasan)</span>}
-    </div>
-  )
-}
 
 // ═══════════════════════════════════════════════════════════════
 // 5.  PAGE 1 — CATALOG
@@ -377,8 +160,8 @@ function Navbar({ onRegister, onHome }: { onRegister: () => void; onHome: () => 
   }
 
   const NAV_LINKS = [
-    { label: 'Beranda',      action: () => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }); setMobileOpen(false) } },
-    { label: 'Direktori',   action: () => scrollTo('catalog-section') },
+    { label: 'Beranda', action: () => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }); setMobileOpen(false) } },
+    { label: 'Direktori', action: () => scrollTo('catalog-section') },
     { label: 'Tentang Kami', action: () => scrollTo('footer-section') },
   ]
 
@@ -514,8 +297,8 @@ function HeroSection({ search, setSearch, onRegister }: {
           <div className="animate-fade-up delay-4 flex flex-wrap gap-6 text-white text-sm">
             {[
               { val: '48+', label: 'UMKM Terdaftar' },
-              { val: '4',   label: 'Kategori Usaha'  },
-              { val: '3',   label: 'Dusun'           },
+              { val: '4', label: 'Kategori Usaha' },
+              { val: '3', label: 'Dusun' },
             ].map(s => (
               <div key={s.val} className="flex items-center gap-2">
                 <span className="font-display font-extrabold text-2xl" style={{ color: '#C5BFA0' }}>{s.val}</span>
@@ -540,11 +323,10 @@ function FilterChips({ active, setActive }: { active: Filter; setActive: (f: Fil
         <button
           key={f}
           onClick={() => setActive(f)}
-          className={`rounded-full px-5 py-2 text-sm font-semibold border transition-all cursor-pointer ${
-            active === f
+          className={`rounded-full px-5 py-2 text-sm font-semibold border transition-all cursor-pointer ${active === f
               ? 'text-white border-transparent shadow-md'
               : 'bg-white text-slate-600 border-slate-200 hover:border-[#8F845F]/50 hover:text-[#8F845F]'
-          }`}
+            }`}
           style={active === f ? { background: 'linear-gradient(135deg,#748C5D,#8F845F)', boxShadow: '0 4px 12px rgba(143,132,95,0.30)' } : undefined}
         >
           {f !== 'Semua' && CATEGORY_EMOJI[f]} {f}
@@ -555,7 +337,7 @@ function FilterChips({ active, setActive }: { active: Filter; setActive: (f: Fil
 }
 
 /* ── Business Card ──────────────────────────────────────────── */
-function BusinessCard({ business, onClick }: { business: Business; onClick: () => void }) {
+function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => void }) {
   return (
     <article
       id={`card-${business.id}`}
@@ -563,20 +345,23 @@ function BusinessCard({ business, onClick }: { business: Business; onClick: () =
       onClick={onClick}
     >
       <div className="relative h-48 overflow-hidden bg-slate-100">
-        <img src={business.image} alt={business.alt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-        <div className="absolute top-3 left-3"><CategoryBadge category={business.category} /></div>
-        <div className="absolute top-3 right-3 flex items-center gap-1 bg-white/90 backdrop-blur-sm rounded-full px-2.5 py-1 text-xs font-semibold text-slate-700 shadow-sm">
-          <StarIcon filled cls="w-3.5 h-3.5 text-amber-400" /> {business.rating}
-        </div>
+        {business.foto_url ? (
+          <img src={business.foto_url} alt={`Foto ${business.nama_usaha}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400">
+            <StoreIcon cls="w-12 h-12" />
+          </div>
+        )}
+        <div className="absolute top-3 left-3"><CategoryBadge category={business.kategori} /></div>
       </div>
 
       <div className="p-4 flex flex-col flex-1 gap-2">
         <h3 className="font-display font-bold text-slate-900 leading-snug transition-colors duration-200 group-hover:text-[#748C5D]">
-          {business.name}
+          {business.nama_usaha}
         </h3>
-        <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 flex-1">{business.description}</p>
+        <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 flex-1">{business.deskripsi}</p>
         <div className="flex items-center gap-1.5 text-xs text-slate-400">
-          <MapPinIcon cls="w-3.5 h-3.5 text-slate-400" /> {business.location}
+          <MapPinIcon cls="w-3.5 h-3.5 text-slate-400" /> {business.lokasi}
         </div>
         <button
           onClick={e => { e.stopPropagation(); onClick() }}
@@ -683,11 +468,27 @@ function Footer({ onHome, onRegister }: { onHome: () => void; onRegister: () => 
 function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
   const [search, setSearch] = useState('')
   const [activeFilter, setActiveFilter] = useState<Filter>('Semua')
+  const [businesses, setBusinesses] = useState<Umkm[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const filtered = BUSINESSES.filter(b => {
+  useEffect(() => {
+    let mounted = true
+    const loadData = async () => {
+      setLoading(true)
+      const data = await fetchUmkmList()
+      if (mounted) {
+        setBusinesses(data)
+        setLoading(false)
+      }
+    }
+    loadData()
+    return () => { mounted = false }
+  }, [])
+
+  const filtered = businesses.filter(b => {
     const q = search.toLowerCase()
-    const matchSearch = !q || b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q) || b.location.toLowerCase().includes(q)
-    const matchCat = activeFilter === 'Semua' || b.category === activeFilter
+    const matchSearch = !q || b.nama_usaha.toLowerCase().includes(q) || b.deskripsi?.toLowerCase().includes(q) || b.lokasi?.toLowerCase().includes(q)
+    const matchCat = activeFilter === 'Semua' || b.kategori === activeFilter
     return matchSearch && matchCat
   })
 
@@ -709,7 +510,12 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
 
         <FilterChips active={activeFilter} setActive={setActiveFilter} />
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#748C5D] mb-4"></div>
+            <h3 className="font-display font-bold text-slate-800 text-lg mb-1">Memuat data...</h3>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
               <SearchIcon cls="w-8 h-8 text-slate-400" />
@@ -769,14 +575,18 @@ function MapPlaceholder({ address }: { address: string }) {
   )
 }
 
-function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: View) => void }) {
+function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View) => void }) {
   const [activeImg, setActiveImg] = useState(0)
   const [galleryActive, setGalleryActive] = useState(0)
 
-  const waUrl = `https://wa.me/${business.phone}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.name}.`)}`
+  const waUrl = `https://wa.me/${business.nomor_wa?.replace(/\D/g, '') ?? ''}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_usaha}.`)}`
 
-  const prevGallery = () => setGalleryActive(i => (i - 1 + business.gallery.length) % business.gallery.length)
-  const nextGallery = () => setGalleryActive(i => (i + 1) % business.gallery.length)
+  const gallery = business.gallery?.length 
+    ? business.gallery 
+    : [{ url: business.foto_url || 'https://via.placeholder.com/600x400?text=Tidak+Ada+Foto', caption: 'Foto Usaha' }]
+
+  const prevGallery = () => setGalleryActive(i => (i - 1 + gallery.length) % gallery.length)
+  const nextGallery = () => setGalleryActive(i => (i + 1) % gallery.length)
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -794,7 +604,7 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
             <ChevronRightIcon cls="w-3 h-3" />
             <button onClick={() => goTo({ page: 'catalog' })} className="hover:text-[#8F845F] cursor-pointer">Direktori</button>
             <ChevronRightIcon cls="w-3 h-3" />
-            <span className="text-slate-600 font-medium truncate max-w-[160px]">{business.name}</span>
+            <span className="text-slate-600 font-medium truncate max-w-[160px]">{business.nama_usaha}</span>
           </div>
         </div>
       </nav>
@@ -805,40 +615,41 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
           {/* ── LEFT ── */}
           <div>
             <div className="rounded-2xl overflow-hidden bg-slate-200 aspect-video">
-              <img src={business.gallery[activeImg].url} alt={business.gallery[activeImg].caption} className="w-full h-full object-cover transition-all duration-300" />
+              <img src={gallery[activeImg]?.url} alt={gallery[activeImg]?.caption} className="w-full h-full object-cover transition-all duration-300" />
             </div>
-            <div className="flex gap-2 mt-3">
-              {business.gallery.map((img, i) => (
-                <button key={i} onClick={() => setActiveImg(i)}
-                  className={`relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all cursor-pointer ${activeImg === i ? 'shadow-md opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                  style={activeImg === i ? { borderColor: '#748C5D' } : undefined}
-                >
-                  <img src={img.url} alt={img.caption} className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
+            {gallery.length > 1 && (
+              <div className="flex gap-2 mt-3">
+                {gallery.map((img, i) => (
+                  <button key={i} onClick={() => setActiveImg(i)}
+                    className={`relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all cursor-pointer ${activeImg === i ? 'shadow-md opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
+                    style={activeImg === i ? { borderColor: '#748C5D' } : undefined}
+                  >
+                    <img src={img.url} alt={img.caption} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* About */}
             <div className="mt-8 bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="font-display font-bold text-slate-900 text-lg mb-3">Tentang Bisnis</h2>
-              <p className="text-slate-600 leading-relaxed text-sm">{business.about}</p>
+              <p className="text-slate-600 leading-relaxed text-sm">{business.deskripsi}</p>
             </div>
           </div>
 
           {/* ── RIGHT STICKY ── */}
           <div className="lg:sticky lg:top-24 space-y-4">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <CategoryBadge category={business.category} large />
-              <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.name}</h1>
-              <StarRating rating={business.rating} reviewCount={business.reviewCount} />
+              <CategoryBadge category={business.kategori} large />
+              <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_usaha}</h1>
               <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-2">
-                <MapPinIcon cls="w-4 h-4 text-slate-400" /> {business.location}
+                <MapPinIcon cls="w-4 h-4 text-slate-400" /> {business.lokasi}
               </div>
               <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-1.5">
                 <svg className="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
-                <span>Pemilik: <span className="font-medium text-slate-700">{business.ownerName}</span></span>
+                <span>Pemilik: <span className="font-medium text-slate-700">{business.nama_pemilik || '-'}</span></span>
               </div>
             </div>
 
@@ -847,16 +658,7 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
               <h3 className="font-semibold text-slate-900 text-sm mb-3 flex items-center gap-2">
                 <MapPinIcon cls="w-4 h-4" style={{ color: '#748C5D' } as React.CSSProperties} /> Lokasi
               </h3>
-              <MapPlaceholder address={business.address} />
-            </div>
-
-            {/* Hours */}
-            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-5">
-              <h3 className="font-semibold text-amber-900 text-sm mb-3 flex items-center gap-2">
-                <ClockIcon cls="w-4 h-4 text-amber-600" /> Jam Operasional
-              </h3>
-              <p className="text-amber-800 text-sm font-medium">{business.hours}</p>
-              <p className="text-amber-700 text-xs mt-1">{business.hoursNote}</p>
+              <MapPlaceholder address={business.alamat || business.lokasi} />
             </div>
 
             {/* CTA */}
@@ -869,13 +671,13 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
                 <WhatsAppIcon cls="w-5 h-5" /> Hubungi Penjual (WhatsApp)
               </a>
               <div className="grid grid-cols-2 gap-2">
-                <a href={`tel:+${business.phone}`}
+                <a href={`tel:+${business.nomor_wa}`}
                   className="flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl py-2.5 text-sm font-medium transition-all text-slate-700 hover:border-[#8F845F]/50 hover:text-[#8F845F]"
                 >
                   <PhoneIcon cls="w-4 h-4" /> Telepon
                 </a>
                 <button
-                  onClick={() => navigator.share?.({ title: business.name, url: window.location.href })}
+                  onClick={() => navigator.share?.({ title: business.nama_usaha, url: window.location.href })}
                   className="flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl py-2.5 text-sm font-medium transition-all text-slate-700 hover:border-[#8F845F]/50 hover:text-[#8F845F] cursor-pointer"
                 >
                   <ShareIcon cls="w-4 h-4" /> Bagikan
@@ -884,53 +686,48 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
             </div>
 
             {/* Social Media & Marketplace */}
-            {(business.linkShopee || business.linkTokopedia || business.linkInstagram || business.linkFacebook || business.linkGmaps) && (
+            {(business.link_shopee || business.link_tokopedia || business.link_instagram || business.link_facebook || business.link_gmaps) && (
               <div className="bg-white rounded-2xl border border-slate-200 p-5">
                 <h3 className="font-semibold text-slate-900 text-sm mb-3">Media Sosial & Marketplace</h3>
                 <div className="space-y-2">
-                  {business.linkShopee && (
-                    <a href={business.linkShopee} target="_blank" rel="noopener noreferrer"
+                  {business.link_shopee && (
+                    <a href={business.link_shopee} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-all group"
                     >
                       <span className="text-lg">🛒</span>
                       <span className="text-sm font-medium text-slate-700 group-hover:text-orange-600">Shopee</span>
-                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                     </a>
                   )}
-                  {business.linkTokopedia && (
-                    <a href={business.linkTokopedia} target="_blank" rel="noopener noreferrer"
+                  {business.link_tokopedia && (
+                    <a href={business.link_tokopedia} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-green-300 hover:bg-green-50 transition-all group"
                     >
                       <span className="text-lg">🏪</span>
                       <span className="text-sm font-medium text-slate-700 group-hover:text-green-700">Tokopedia</span>
-                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                     </a>
                   )}
-                  {business.linkInstagram && (
-                    <a href={business.linkInstagram} target="_blank" rel="noopener noreferrer"
+                  {business.link_instagram && (
+                    <a href={business.link_instagram} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50 transition-all group"
                     >
                       <span className="text-lg">📸</span>
                       <span className="text-sm font-medium text-slate-700 group-hover:text-pink-600">Instagram</span>
-                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                     </a>
                   )}
-                  {business.linkFacebook && (
-                    <a href={business.linkFacebook} target="_blank" rel="noopener noreferrer"
+                  {business.link_facebook && (
+                    <a href={business.link_facebook} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all group"
                     >
                       <span className="text-lg">👥</span>
                       <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600">Facebook</span>
-                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                     </a>
                   )}
-                  {business.linkGmaps && (
-                    <a href={business.linkGmaps} target="_blank" rel="noopener noreferrer"
+                  {business.link_gmaps && (
+                    <a href={business.link_gmaps} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-red-300 hover:bg-red-50 transition-all group"
                     >
                       <span className="text-lg">📍</span>
                       <span className="text-sm font-medium text-slate-700 group-hover:text-red-600">Google Maps</span>
-                      <svg className="w-3.5 h-3.5 ml-auto text-slate-400 group-hover:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                     </a>
                   )}
                 </div>
@@ -940,32 +737,40 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
         </div>
 
         {/* Gallery Section */}
-        <div className="mt-12">
-          <h2 className="font-display font-bold text-slate-900 text-xl mb-6">Galeri Foto</h2>
-          <div className="relative rounded-2xl overflow-hidden bg-slate-200 aspect-video mb-4 group">
-            <img src={business.gallery[galleryActive].url} alt={business.gallery[galleryActive].caption} className="w-full h-full object-cover" />
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-              <p className="text-white text-sm font-medium">{business.gallery[galleryActive].caption}</p>
-              <p className="text-white/60 text-xs">{galleryActive + 1} / {business.gallery.length}</p>
+        {gallery.length > 0 && (
+          <div className="mt-12">
+            <h2 className="font-display font-bold text-slate-900 text-xl mb-6">Galeri Foto</h2>
+            <div className="relative rounded-2xl overflow-hidden bg-slate-200 aspect-video mb-4 group">
+              <img src={gallery[galleryActive]?.url} alt={gallery[galleryActive]?.caption} className="w-full h-full object-cover" />
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                <p className="text-white text-sm font-medium">{gallery[galleryActive]?.caption}</p>
+                <p className="text-white/60 text-xs">{galleryActive + 1} / {gallery.length}</p>
+              </div>
+              {gallery.length > 1 && (
+                <>
+                  <button onClick={prevGallery} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    <ChevronLeftIcon cls="w-5 h-5 text-slate-700" />
+                  </button>
+                  <button onClick={nextGallery} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                    <ChevronRightIcon cls="w-5 h-5 text-slate-700" />
+                  </button>
+                </>
+              )}
             </div>
-            <button onClick={prevGallery} className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-              <ChevronLeftIcon cls="w-5 h-5 text-slate-700" />
-            </button>
-            <button onClick={nextGallery} className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-              <ChevronRightIcon cls="w-5 h-5 text-slate-700" />
-            </button>
+            {gallery.length > 1 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {gallery.map((img, i) => (
+                  <button key={i} onClick={() => setGalleryActive(i)}
+                    className={`aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${galleryActive === i ? 'shadow-md opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
+                    style={galleryActive === i ? { borderColor: '#748C5D' } : undefined}
+                  >
+                    <img src={img.url} alt={img.caption} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {business.gallery.map((img, i) => (
-              <button key={i} onClick={() => setGalleryActive(i)}
-                className={`aspect-video rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${galleryActive === i ? 'shadow-md opacity-100' : 'border-transparent opacity-70 hover:opacity-100'}`}
-                style={galleryActive === i ? { borderColor: '#748C5D' } : undefined}
-              >
-                <img src={img.url} alt={img.caption} className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )
@@ -976,15 +781,15 @@ function BusinessDetailPage({ business, goTo }: { business: Business; goTo: (v: 
 // ═══════════════════════════════════════════════════════════════
 
 const CATEGORY_OPTIONS = [
-  { value: 'Makanan',   label: '🍽️  Makanan & Minuman'    },
-  { value: 'Kerajinan', label: '🎨  Kerajinan Tangan'      },
-  { value: 'Jasa',      label: '⚡  Jasa & Layanan'        },
+  { value: 'Makanan', label: '🍽️  Makanan & Minuman' },
+  { value: 'Kerajinan', label: '🎨  Kerajinan Tangan' },
+  { value: 'Jasa', label: '⚡  Jasa & Layanan' },
   { value: 'Pertanian', label: '🌾  Pertanian & Perkebunan' },
-  { value: 'Ternak',    label: '🐄  Peternakan'            },
-  { value: 'Lainnya',   label: '📦  Lainnya'               },
+  { value: 'Ternak', label: '🐄  Peternakan' },
+  { value: 'Lainnya', label: '📦  Lainnya' },
 ]
 
-interface FormState  {
+interface FormState {
   nama: string
   pemilik: string
   kategori: string
@@ -1099,9 +904,45 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
     setErrors(e); return Object.keys(e).length === 0
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); if (!validate()) return
-    setLoading(true); setTimeout(() => { setLoading(false); setSubmitted(true) }, 1200)
+    setLoading(true)
+    
+    // Convert to UmkmPendingPayload format
+    const payload = {
+      nama_usaha: form.nama,
+      nama_pemilik: form.pemilik,
+      kategori: form.kategori as 'Makanan' | 'Kerajinan' | 'Jasa' | 'Pertanian' | 'Ternak' | 'Lainnya',
+      deskripsi: 'Deskripsi singkat belum diisi...', // Frontend form doesn't have deskripsi yet, use placeholder
+      lokasi: form.alamat.substring(0, 50), // Extract short location from address
+      alamat: form.alamat,
+      nomor_wa: form.whatsapp,
+      link_shopee: form.linkShopee || undefined,
+      link_tokopedia: form.linkTokopedia || undefined,
+      link_instagram: form.linkInstagram || undefined,
+      link_facebook: form.linkFacebook || undefined,
+      link_gmaps: form.linkGmaps || undefined,
+    }
+
+    const result = await submitPendingUmkm(payload)
+    setLoading(false)
+    
+    if (result.success) {
+      setSubmitted(true)
+    } else {
+      if (result.errors) {
+        // Map backend errors (e.g. from 422) to frontend form errors
+        const backendErrors: FormErrors = {}
+        if (result.errors.nama_usaha) backendErrors.nama = result.errors.nama_usaha[0]
+        if (result.errors.nama_pemilik) backendErrors.pemilik = result.errors.nama_pemilik[0]
+        if (result.errors.kategori) backendErrors.kategori = result.errors.kategori[0]
+        if (result.errors.alamat) backendErrors.alamat = result.errors.alamat[0]
+        if (result.errors.nomor_wa) backendErrors.whatsapp = result.errors.nomor_wa[0]
+        setErrors(backendErrors)
+      } else {
+        alert(result.message)
+      }
+    }
   }
 
   if (submitted) return <SuccessState onBack={() => goTo({ page: 'catalog' })} />
@@ -1327,6 +1168,6 @@ export default function Home() {
   }, [])
 
   if (view.page === 'detail') return <BusinessDetailPage business={view.business} goTo={goTo} />
-  if (view.page === 'form')   return <RegisterFormPage goTo={goTo} />
+  if (view.page === 'form') return <RegisterFormPage goTo={goTo} />
   return <CatalogPage goTo={goTo} />
 }

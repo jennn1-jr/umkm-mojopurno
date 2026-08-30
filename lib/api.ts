@@ -70,17 +70,27 @@ export async function fetchUmkmById(id: number): Promise<Umkm | null> {
  */
 export async function submitPendingUmkm(
   payload: UmkmPendingPayload
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; errors?: Record<string, string[]> }> {
   try {
     const res = await fetch(`${BASE_URL}/api/umkm/pending`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
       body: JSON.stringify(payload),
     });
 
     const json = await res.json();
 
     if (!res.ok) {
+      if (res.status === 422) {
+        return {
+          success: false,
+          message: json.message ?? "Terjadi kesalahan validasi.",
+          errors: json.errors,
+        };
+      }
       return {
         success: false,
         message: json.message ?? "Gagal mengirim data. Silakan coba lagi.",

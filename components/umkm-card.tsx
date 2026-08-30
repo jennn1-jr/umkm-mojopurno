@@ -23,8 +23,8 @@ interface UmkmCardProps {
 }
 
 export default function UmkmCard({ umkm }: UmkmCardProps) {
-  const waUrl = `https://wa.me/${umkm.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(
-    `Halo, saya tertarik dengan ${umkm.nama_umkm}.`
+  const waUrl = `https://wa.me/${umkm.nomor_wa?.replace(/\D/g, "") ?? ""}?text=${encodeURIComponent(
+    `Halo, saya tertarik dengan ${umkm.nama_usaha}.`
   )}`;
 
   return (
@@ -40,7 +40,7 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={umkm.foto_url}
-            alt={`Foto ${umkm.nama_umkm}`}
+            alt={`Foto ${umkm.nama_usaha}`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
           />
@@ -68,7 +68,7 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
         {/* Name */}
         <h3 className="font-bold text-base text-[#2C2A24] leading-snug line-clamp-2
                        group-hover:text-[#748C5D] transition-colors duration-200">
-          {umkm.nama_umkm}
+          {umkm.nama_usaha}
         </h3>
 
         {/* Description */}
