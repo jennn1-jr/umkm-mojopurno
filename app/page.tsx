@@ -579,7 +579,9 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
   const [activeImg, setActiveImg] = useState(0)
   const [galleryActive, setGalleryActive] = useState(0)
 
-  const waUrl = `https://wa.me/${business.whatsapp?.replace(/\D/g, '') ?? ''}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_umkm}.`)}`
+  let waNum = business.whatsapp?.replace(/\D/g, '') ?? ''
+  if (waNum.startsWith('0')) waNum = '62' + waNum.substring(1)
+  const waUrl = `https://wa.me/${waNum}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_umkm}.`)}`
 
   const gallery = business.fotos?.length 
     ? business.fotos.map(url => ({ url, caption: 'Foto Produk' }))
@@ -634,9 +636,7 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
             <div className="mt-8 bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="font-display font-bold text-slate-900 text-lg mb-3">Tentang Bisnis</h2>
               <p className="text-slate-600 leading-relaxed text-sm mb-4">{business.deskripsi}</p>
-              {business.tentang && (
-                <p className="text-slate-600 leading-relaxed text-sm whitespace-pre-wrap">{business.tentang}</p>
-              )}
+
             </div>
           </div>
 
@@ -929,10 +929,37 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
     if (form.linkFacebook) payload.append('link_facebook', form.linkFacebook);
     if (form.linkGmaps) payload.append('link_gmaps', form.linkGmaps);
 
-    // Append photos if they exist
-    files.forEach((file) => {
-      payload.append('fotos[]', file);
-    });
+    const compressImage = async (file: File): Promise<Blob> => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const MAX_SIZE = 1200;
+          if (width > height && width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          } else if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, width, height);
+          canvas.toBlob((blob) => resolve(blob || file), 'image/jpeg', 0.8);
+        };
+        img.onerror = () => resolve(file);
+        img.src = URL.createObjectURL(file);
+      });
+    };
+
+    // Append photos if they exist (compressed)
+    for (const file of files) {
+      const compressed = await compressImage(file);
+      payload.append('fotos[]', compressed, file.name);
+    }
 
     const result = await submitPendingUmkm(payload)
     setLoading(false)

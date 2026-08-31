@@ -1,4 +1,5 @@
 import type { Umkm, Kategori } from "@/lib/types";
+import UmkmMap from "./umkm-map";
 
 const BADGE_STYLE: Record<Kategori, string> = {
   Makanan:   "bg-[#FFF5E6] text-[#A0622A] border-[#F5DEC2]",
@@ -100,6 +101,11 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
             />
           </svg>
           <span className="truncate">{umkm.lokasi}</span>
+        </div>
+
+        {/* Google Maps Embed */}
+        <div className="mt-1">
+          <UmkmMap mapEmbedUrl={umkm.map_embed_url} />
         </div>
 
         {/* Divider */}

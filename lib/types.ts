@@ -17,6 +17,7 @@ export interface Umkm {
   link_instagram?: string;
   link_facebook?: string;
   link_gmaps?: string;
+  map_embed_url?: string;
 }
 
 export interface ApiResponse<T> {
