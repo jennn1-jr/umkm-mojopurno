@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { submitPendingUmkm, fetchUmkmList } from '@/lib/api'
 import type { Umkm, Kategori } from '@/lib/types'
+import UmkmMap from '@/components/umkm-map'
 
 // ═══════════════════════════════════════════════════════════════
 // 1.  TYPES
@@ -324,8 +325,8 @@ function FilterChips({ active, setActive }: { active: Filter; setActive: (f: Fil
           key={f}
           onClick={() => setActive(f)}
           className={`rounded-full px-5 py-2 text-sm font-semibold border transition-all cursor-pointer ${active === f
-              ? 'text-white border-transparent shadow-md'
-              : 'bg-white text-slate-600 border-slate-200 hover:border-[#8F845F]/50 hover:text-[#8F845F]'
+            ? 'text-white border-transparent shadow-md'
+            : 'bg-white text-slate-600 border-slate-200 hover:border-[#8F845F]/50 hover:text-[#8F845F]'
             }`}
           style={active === f ? { background: 'linear-gradient(135deg,#748C5D,#8F845F)', boxShadow: '0 4px 12px rgba(143,132,95,0.30)' } : undefined}
         >
@@ -583,7 +584,7 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
   if (waNum.startsWith('0')) waNum = '62' + waNum.substring(1)
   const waUrl = `https://wa.me/${waNum}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_umkm}.`)}`
 
-  const gallery = business.fotos?.length 
+  const gallery = business.fotos?.length
     ? business.fotos.map(url => ({ url, caption: 'Foto Produk' }))
     : [{ url: business.foto_url || 'https://via.placeholder.com/600x400?text=Tidak+Ada+Foto', caption: 'Foto Usaha' }]
 
@@ -634,9 +635,32 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
 
             {/* About */}
             <div className="mt-8 bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="font-display font-bold text-slate-900 text-lg mb-3">Tentang Bisnis</h2>
-              <p className="text-slate-600 leading-relaxed text-sm mb-4">{business.deskripsi}</p>
+              <h2 className="font-display font-bold text-slate-900 text-lg mb-3">Tentang Usaha</h2>
+              <p className="text-slate-600 leading-relaxed text-sm mb-4 whitespace-pre-wrap">{business.deskripsi}</p>
 
+              {/* Poin-poin unggulan dari field `tentang`, dipisah per baris */}
+              {business.tentang && (() => {
+                const points = business.tentang
+                  .split('\n')
+                  .map((l: string) => l.trim())
+                  .filter((l: string) => l.length > 0)
+                return points.length > 0 ? (
+                  <div className="mt-3 pt-4 border-t border-slate-100">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Keunggulan Usaha</p>
+                    <ul className="space-y-2">
+                      {points.map((point: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2.5 text-sm text-slate-700">
+                          <span
+                            className="mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                            style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}
+                          >✓</span>
+                          <span className="leading-snug">{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null
+              })()}
             </div>
           </div>
 
@@ -661,7 +685,7 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
               <h3 className="font-semibold text-slate-900 text-sm mb-3 flex items-center gap-2">
                 <MapPinIcon cls="w-4 h-4" style={{ color: '#748C5D' } as React.CSSProperties} /> Lokasi
               </h3>
-              <MapPlaceholder address={business.alamat || business.lokasi} />
+              <UmkmMap mapEmbedUrl={business.map_embed_url} />
             </div>
 
             {/* CTA */}
@@ -797,6 +821,7 @@ interface FormState {
   pemilik: string
   kategori: string
   deskripsi: string
+  tentang: string
   alamat: string
   whatsapp: string
   linkShopee: string
@@ -871,7 +896,7 @@ function SuccessState({ onBack }: { onBack: () => void }) {
 
 function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
   const [form, setForm] = useState<FormState>({
-    nama: '', pemilik: '', kategori: '', deskripsi: '', alamat: '', whatsapp: '',
+    nama: '', pemilik: '', kategori: '', deskripsi: '', tentang: '', alamat: '', whatsapp: '',
     linkShopee: '', linkTokopedia: '', linkInstagram: '', linkFacebook: '', linkGmaps: ''
   })
   const [errors, setErrors] = useState<FormErrors>({})
@@ -913,13 +938,14 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); if (!validate()) return
     setLoading(true)
-    
+
     // Create FormData payload
     const payload = new FormData();
     payload.append('nama_usaha', form.nama);
     payload.append('nama_pemilik', form.pemilik);
     payload.append('kategori', form.kategori);
     payload.append('deskripsi', form.deskripsi);
+    if (form.tentang.trim()) payload.append('tentang', form.tentang.trim());
     payload.append('lokasi', form.alamat.substring(0, 50));
     payload.append('alamat', form.alamat);
     payload.append('nomor_wa', form.whatsapp);
@@ -963,7 +989,7 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
 
     const result = await submitPendingUmkm(payload)
     setLoading(false)
-    
+
     if (result.success) {
       setSubmitted(true)
     } else {
@@ -1043,6 +1069,31 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
                   </div>
                   <textarea id="deskripsi" rows={3} value={form.deskripsi} onChange={update('deskripsi')} maxLength={500} placeholder="Jelaskan secara singkat mengenai produk atau jasa yang Anda tawarkan..." className={inputClass(errors.deskripsi) + ' resize-none'} />
                   {errors.deskripsi && <p className="mt-1 text-xs text-red-600">{errors.deskripsi}</p>}
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700" htmlFor="tentang">
+                      Poin Unggulan Usaha
+                    </label>
+                    <span className="text-xs text-slate-400">Opsional</span>
+                  </div>
+                  <textarea
+                    id="tentang"
+                    rows={5}
+                    value={form.tentang}
+                    onChange={update('tentang')}
+                    maxLength={800}
+                    placeholder={`Tulis satu poin per baris, contoh:
+Produk 100% halal & organik
+Harga mulai Rp 5.000
+Pengiriman ke seluruh Ngawi
+Bisa pesan via WhatsApp`}
+                    className={inputClass() + ' resize-none font-mono text-xs leading-relaxed'}
+                  />
+                  <p className="mt-1.5 text-xs text-slate-400 flex items-center gap-1">
+                    <span className="inline-flex w-4 h-4 rounded-full items-center justify-center text-white text-[10px]" style={{ background: '#748C5D' }}>✓</span>
+                    Setiap baris akan tampil sebagai poin keunggulan di halaman profil usaha
+                  </p>
                 </div>
               </div>
             </div>
