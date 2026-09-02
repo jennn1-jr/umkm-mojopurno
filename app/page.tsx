@@ -365,13 +365,14 @@ function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => vo
         <div className="absolute top-3 left-3"><CategoryBadge category={business.kategori} /></div>
       </div>
 
-      <div className="p-4 flex flex-col flex-1 gap-2">
-        <h3 className="font-display font-bold text-slate-900 leading-snug transition-colors duration-200 group-hover:text-[#748C5D]">
+      <div className="p-4 flex flex-col flex-1 gap-2 min-w-0">
+        <h3 className="font-display font-bold text-slate-900 leading-snug transition-colors duration-200 group-hover:text-[#748C5D] min-w-0">
           {business.nama_umkm}
         </h3>
-        <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 flex-1">{business.deskripsi}</p>
-        <div className="flex items-center gap-1.5 text-xs text-slate-400">
-          <MapPinIcon cls="w-3.5 h-3.5 text-slate-400" /> {business.lokasi}
+        <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 flex-1 min-w-0">{business.deskripsi}</p>
+        <div className="flex items-start gap-1.5 text-xs text-slate-400 min-w-0">
+          <MapPinIcon cls="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" /> 
+          <span className="min-w-0 break-all">{business.lokasi}</span>
         </div>
         <button
           onClick={e => { e.stopPropagation(); onClick() }}
@@ -678,14 +679,15 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <CategoryBadge category={business.kategori} large />
               <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_umkm}</h1>
-              <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-2">
-                <MapPinIcon cls="w-4 h-4 text-slate-400" /> {business.lokasi}
+              <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-2">
+                <MapPinIcon cls="w-4 h-4 text-slate-400 shrink-0 mt-0.5" /> 
+                <span className="flex-1 break-words">{business.lokasi}</span>
               </div>
-              <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-1.5">
-                <svg className="w-4 h-4 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
+              <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-1.5">
+                <svg className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                 </svg>
-                <span>Pemilik: <span className="font-medium text-slate-700">{business.nama_pemilik || '-'}</span></span>
+                <span className="flex-1 break-words">Pemilik: <span className="font-medium text-slate-700">{business.nama_pemilik || '-'}</span></span>
               </div>
             </div>
 
@@ -706,23 +708,16 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
               >
                 <WhatsAppIcon cls="w-5 h-5" /> Hubungi Penjual (WhatsApp)
               </a>
-              <div className="grid grid-cols-2 gap-2">
-                <a href={`tel:+${business.whatsapp}`}
-                  className="flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl py-2.5 text-sm font-medium transition-all text-slate-700 hover:border-[#8F845F]/50 hover:text-[#8F845F]"
-                >
-                  <PhoneIcon cls="w-4 h-4" /> Telepon
-                </a>
-                <button
-                  onClick={() => navigator.share?.({ title: business.nama_umkm, url: window.location.href })}
-                  className="flex items-center justify-center gap-2 bg-white border border-slate-200 rounded-xl py-2.5 text-sm font-medium transition-all text-slate-700 hover:border-[#8F845F]/50 hover:text-[#8F845F] cursor-pointer"
-                >
-                  <ShareIcon cls="w-4 h-4" /> Bagikan
-                </button>
-              </div>
+              <button
+                onClick={() => navigator.share?.({ title: business.nama_umkm, url: window.location.href })}
+                className="flex items-center justify-center gap-2 w-full bg-white border border-slate-200 rounded-xl py-2.5 text-sm font-medium transition-all text-slate-700 hover:border-[#8F845F]/50 hover:text-[#8F845F] cursor-pointer"
+              >
+                <ShareIcon cls="w-4 h-4" /> Bagikan
+              </button>
             </div>
 
             {/* Social Media & Marketplace */}
-            {(business.link_shopee || business.link_tokopedia || business.link_instagram || business.link_facebook || business.link_gmaps) && (
+            {(business.link_shopee || business.link_tokopedia || business.link_instagram || business.link_facebook || business.link_tiktok) && (
               <div className="bg-white rounded-2xl border border-slate-200 p-5">
                 <h3 className="font-semibold text-slate-900 text-sm mb-3">Media Sosial & Marketplace</h3>
                 <div className="space-y-2">
@@ -758,12 +753,12 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
                       <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600">Facebook</span>
                     </a>
                   )}
-                  {business.link_gmaps && (
-                    <a href={business.link_gmaps} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-red-300 hover:bg-red-50 transition-all group"
+                  {business.link_tiktok && (
+                    <a href={business.link_tiktok} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-slate-400 hover:bg-slate-50 transition-all group"
                     >
-                      <span className="text-lg">📍</span>
-                      <span className="text-sm font-medium text-slate-700 group-hover:text-red-600">Google Maps</span>
+                      <span className="text-lg">🎵</span>
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">TikTok</span>
                     </a>
                   )}
                 </div>
@@ -835,7 +830,7 @@ interface FormState {
   linkTokopedia: string
   linkInstagram: string
   linkFacebook: string
-  linkGmaps: string
+  linkTiktok: string
 }
 interface FormErrors {
   nama?: string
@@ -904,7 +899,7 @@ function SuccessState({ onBack }: { onBack: () => void }) {
 function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
   const [form, setForm] = useState<FormState>({
     nama: '', pemilik: '', kategori: '', deskripsi: '', tentang: '', alamat: '', whatsapp: '',
-    linkShopee: '', linkTokopedia: '', linkInstagram: '', linkFacebook: '', linkGmaps: ''
+    linkShopee: '', linkTokopedia: '', linkInstagram: '', linkFacebook: '', linkTiktok: ''
   })
   const [errors, setErrors] = useState<FormErrors>({})
   const [files, setFiles] = useState<File[]>([])
@@ -965,7 +960,7 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
     if (form.linkTokopedia) payload.append('link_tokopedia', form.linkTokopedia);
     if (form.linkInstagram) payload.append('link_instagram', form.linkInstagram);
     if (form.linkFacebook) payload.append('link_facebook', form.linkFacebook);
-    if (form.linkGmaps) payload.append('link_gmaps', form.linkGmaps);
+    if (form.linkTiktok) payload.append('link_tiktok', form.linkTiktok);
 
     const compressImage = async (file: File): Promise<Blob> => {
       return new Promise((resolve) => {
@@ -1193,10 +1188,10 @@ Bisa pesan via WhatsApp`}
                   />
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xl w-7 text-center">📍</span>
+                  <span className="text-xl w-7 text-center">🎵</span>
                   <input
-                    id="linkGmaps" type="url" value={form.linkGmaps} onChange={update('linkGmaps')}
-                    placeholder="https://maps.google.com/?q=..."
+                    id="linkTiktok" type="url" value={form.linkTiktok} onChange={update('linkTiktok')}
+                    placeholder="https://tiktok.com/@akunanda"
                     className={inputClass() + ' flex-1'}
                   />
                 </div>

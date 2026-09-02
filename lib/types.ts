@@ -16,7 +16,7 @@ export interface Umkm {
   link_tokopedia?: string;
   link_instagram?: string;
   link_facebook?: string;
-  link_gmaps?: string;
+  link_tiktok?: string;
   map_embed_url?: string;
 }
 
@@ -38,5 +38,5 @@ export interface UmkmPendingPayload {
   link_tokopedia?: string;
   link_instagram?: string;
   link_facebook?: string;
-  link_gmaps?: string;
+  link_tiktok?: string;
 }
