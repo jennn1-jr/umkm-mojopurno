@@ -1,31 +1,25 @@
 import type { Umkm, Kategori } from "@/lib/types";
 import UmkmMap from "./umkm-map";
 
-const BADGE_STYLE: Record<Kategori, string> = {
-  Makanan:   "bg-[#FFF5E6] text-[#A0622A] border-[#F5DEC2]",
-  Kerajinan: "bg-[#F0F4EC] text-[#4E6E3A] border-[#C9DAB8]",
-  Jasa:      "bg-[#F2F0E8] text-[#8F845F] border-[#D9D4C0]",
-  Pertanian: "bg-[#E6F4EA] text-[#2E7D32] border-[#A5D6A7]",
-  Ternak:    "bg-[#FCE4EC] text-[#C2185B] border-[#F48FB1]",
-  Lainnya:   "bg-[#F5F5F5] text-[#616161] border-[#E0E0E0]",
+const BADGE_STYLE: Record<string, string> = {
+  Makanan: "bg-[#FFF5E6] text-[#A0622A] border-[#F5DEC2]",
+  "Kerajinan Kulit": "bg-[#F0F4EC] text-[#4E6E3A] border-[#C9DAB8]",
+  "Alas Kaki": "bg-[#F2F0E8] text-[#8F845F] border-[#D9D4C0]",
+  Lainnya: "bg-[#F5F5F5] text-[#616161] border-[#E0E0E0]",
 };
 
-const BADGE_ICON: Record<Kategori, string> = {
-  Makanan:   "🍽️",
-  Kerajinan: "🎨",
-  Jasa:      "⚡",
-  Pertanian: "🌾",
-  Ternak:    "🐄",
-  Lainnya:   "📦",
+const BADGE_ICON: Record<string, string> = {
+  Makanan: "🍽️",
+  "Kerajinan Kulit": "🎨",
+  "Alas Kaki": "👞",
+  Lainnya: "📦",
 };
 
-const PHOTO_GRADIENT: Record<Kategori, string> = {
-  Makanan:   "from-amber-200 to-orange-300",
-  Kerajinan: "from-[#C9DAB8] to-[#748C5D]",
-  Jasa:      "from-[#D9D4C0] to-[#8F845F]",
-  Pertanian: "from-green-200 to-emerald-400",
-  Ternak:    "from-pink-200 to-rose-400",
-  Lainnya:   "from-gray-200 to-slate-400",
+const PHOTO_GRADIENT: Record<string, string> = {
+  Makanan: "from-amber-200 to-orange-300",
+  "Kerajinan Kulit": "from-[#C9DAB8] to-[#748C5D]",
+  "Alas Kaki": "from-[#D9D4C0] to-[#8F845F]",
+  Lainnya: "from-gray-200 to-slate-400",
 };
 
 interface UmkmCardProps {
@@ -36,6 +30,7 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
   const waUrl = `https://wa.me/${umkm.whatsapp?.replace(/\D/g, "") ?? ""}?text=${encodeURIComponent(
     `Halo, saya tertarik dengan ${umkm.nama_umkm}.`
   )}`;
+  const categories = umkm.kategori.split(',').map(c => c.trim());
 
   return (
     <article
@@ -56,21 +51,26 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
           />
         ) : (
           <div
-            className={`w-full h-full bg-gradient-to-br ${PHOTO_GRADIENT[umkm.kategori]}
+            className={`w-full h-full bg-gradient-to-br ${PHOTO_GRADIENT[categories[0]] ?? PHOTO_GRADIENT["Lainnya"]}
                         flex items-center justify-center`}
           >
-            <span className="text-5xl">{BADGE_ICON[umkm.kategori]}</span>
+            <span className="text-5xl">{BADGE_ICON[categories[0]] ?? ""}</span>
           </div>
         )}
 
-        {/* Category badge */}
-        <span
-          className={`absolute top-3 left-3 inline-flex items-center gap-1
-                      px-2.5 py-1 rounded-full text-xs font-semibold border
-                      ${BADGE_STYLE[umkm.kategori]}`}
-        >
-          {BADGE_ICON[umkm.kategori]} {umkm.kategori}
-        </span>
+        {/* Category badges */}
+        <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 max-w-[90%]">
+          {categories.map((cat, idx) => (
+            <span
+              key={idx}
+              className={`inline-flex items-center gap-1
+                          px-2.5 py-1 rounded-full text-xs font-semibold border
+                          ${BADGE_STYLE[cat] ?? BADGE_STYLE["Lainnya"]}`}
+            >
+              {BADGE_ICON[cat] && <span>{BADGE_ICON[cat]}</span>} {cat}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* ── Body ──────────────────────────────────────────── */}

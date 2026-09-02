@@ -1,4 +1,4 @@
-export type Kategori = "Makanan" | "Kerajinan" | "Jasa" | "Pertanian" | "Ternak" | "Lainnya";
+export type Kategori = string;
 
 export interface Umkm {
   id: number;

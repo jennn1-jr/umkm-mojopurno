@@ -113,7 +113,7 @@ export default function HeroSection() {
           {[
             { label: "🍽️  Makanan",    value: "Makanan"   },
             { label: "🎨  Kerajinan",  value: "Kerajinan" },
-            { label: "⚡  Jasa",       value: "Jasa"      },
+            { label: "👞  Alas Kaki",       value: "Alas Kaki"      },
           ].map(({ label, value }) => (
             <button
               key={value}

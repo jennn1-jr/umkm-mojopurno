@@ -128,19 +128,28 @@ function ChevronRightIcon({ cls = 'w-5 h-5' }: { cls?: string }) {
 // ── Warna kategori tetap distingktif per jenis usaha ──────────
 const CATEGORY_STYLE: Record<string, string> = {
   Makanan: 'bg-amber-100 text-amber-700 ring-amber-200',
-  Kerajinan: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
-  Jasa: 'bg-violet-100 text-violet-700 ring-violet-200',
+  "Kerajinan Kulit": 'bg-emerald-100 text-emerald-700 ring-emerald-200',
+  "Alas Kaki": 'bg-violet-100 text-violet-700 ring-violet-200',
+  Lainnya: 'bg-slate-100 text-slate-700 ring-slate-200'
 }
 const CATEGORY_EMOJI: Record<string, string> = {
-  Makanan: '🍽️', Kerajinan: '🎨', Jasa: '⚡',
+  Makanan: '🍽️', "Kerajinan Kulit": '🎨', "Alas Kaki": '👞', Lainnya: '📦'
 }
 
 function CategoryBadge({ category, large = false }: { category: string; large?: boolean }) {
-  const style = CATEGORY_STYLE[category] ?? 'bg-slate-100 text-slate-600'
+  const categories = category.split(',').map(c => c.trim())
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full font-medium ring-1 ring-inset ${style} ${large ? 'px-3 py-1 text-sm' : 'px-2.5 py-0.5 text-xs'}`}>
-      {CATEGORY_EMOJI[category]} {category}
-    </span>
+    <div className="flex flex-wrap gap-1.5">
+      {categories.map((cat, i) => {
+        const style = CATEGORY_STYLE[cat] ?? 'bg-slate-100 text-slate-600 ring-slate-200'
+        const emoji = CATEGORY_EMOJI[cat]
+        return (
+          <span key={i} className={`inline-flex items-center gap-1 rounded-full font-medium ring-1 ring-inset ${style} ${large ? 'px-3 py-1 text-sm' : 'px-2.5 py-0.5 text-xs'}`}>
+            {emoji && <span>{emoji}</span>} {cat}
+          </span>
+        )
+      })}
+    </div>
   )
 }
 
@@ -314,7 +323,7 @@ function HeroSection({ search, setSearch, onRegister }: {
 }
 
 /* ── Filter Chips ───────────────────────────────────────────── */
-const FILTERS = ['Semua', 'Makanan', 'Kerajinan', 'Jasa'] as const
+const FILTERS = ['Semua', 'Makanan', 'Kerajinan Kulit', 'Alas Kaki', 'Lainnya'] as const
 type Filter = typeof FILTERS[number]
 
 function FilterChips({ active, setActive }: { active: Filter; setActive: (f: Filter) => void }) {
@@ -489,7 +498,7 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
   const filtered = businesses.filter(b => {
     const q = search.toLowerCase()
     const matchSearch = !q || b.nama_umkm.toLowerCase().includes(q) || b.deskripsi?.toLowerCase().includes(q) || b.lokasi?.toLowerCase().includes(q)
-    const matchCat = activeFilter === 'Semua' || b.kategori === activeFilter
+    const matchCat = activeFilter === 'Semua' || b.kategori.split(',').map(c => c.trim().toLowerCase()).includes(activeFilter.toLowerCase())
     return matchSearch && matchCat
   })
 
@@ -808,11 +817,9 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
 // ═══════════════════════════════════════════════════════════════
 
 const CATEGORY_OPTIONS = [
-  { value: 'Makanan', label: '🍽️  Makanan & Minuman' },
-  { value: 'Kerajinan', label: '🎨  Kerajinan Tangan' },
-  { value: 'Jasa', label: '⚡  Jasa & Layanan' },
-  { value: 'Pertanian', label: '🌾  Pertanian & Perkebunan' },
-  { value: 'Ternak', label: '🐄  Peternakan' },
+  { value: 'Makanan', label: '🍽️  Makanan' },
+  { value: 'Kerajinan Kulit', label: '🎨  Kerajinan Kulit' },
+  { value: 'Alas Kaki', label: '👞  Alas Kaki' },
   { value: 'Lainnya', label: '📦  Lainnya' },
 ]
 
@@ -948,7 +955,12 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
     if (form.tentang.trim()) payload.append('tentang', form.tentang.trim());
     payload.append('lokasi', form.alamat.substring(0, 50));
     payload.append('alamat', form.alamat);
-    payload.append('nomor_wa', form.whatsapp);
+
+    let waNum = form.whatsapp.replace(/\D/g, '');
+    if (waNum.startsWith('0')) waNum = '62' + waNum.substring(1);
+    else if (!waNum.startsWith('62')) waNum = '62' + waNum;
+    payload.append('nomor_wa', waNum);
+
     if (form.linkShopee) payload.append('link_shopee', form.linkShopee);
     if (form.linkTokopedia) payload.append('link_tokopedia', form.linkTokopedia);
     if (form.linkInstagram) payload.append('link_instagram', form.linkInstagram);
@@ -1056,10 +1068,19 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1.5" htmlFor="kategori">Kategori Usaha <span className="text-red-500">*</span></label>
-                  <select id="kategori" value={form.kategori} onChange={update('kategori')} className={inputClass(errors.kategori) + ' bg-white'}>
-                    <option value="">Pilih kategori...</option>
+                  <input
+                    id="kategori"
+                    type="text"
+                    list="kategori-options"
+                    value={form.kategori}
+                    onChange={update('kategori')}
+                    placeholder="Contoh: Makanan, Alas Kaki"
+                    className={inputClass(errors.kategori) + ' bg-white'}
+                  />
+                  <datalist id="kategori-options">
                     {CATEGORY_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                  </select>
+                  </datalist>
+                  <p className="mt-1.5 text-xs text-slate-400">Pilih dari daftar atau ketik sendiri kategori baru. Pisahkan dengan koma untuk lebih dari satu kategori.</p>
                   {errors.kategori && <p className="mt-1 text-xs text-red-600">{errors.kategori}</p>}
                 </div>
                 <div>
