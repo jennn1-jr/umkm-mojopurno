@@ -111,9 +111,9 @@ export default function HeroSection() {
         {/* ── Category chips ───────────────────────────────── */}
         <div className="animate-fade-up delay-400 flex flex-wrap justify-center gap-2 mt-1">
           {[
-            { label: "🍽️  Makanan",    value: "Makanan"   },
-            { label: "🎨  Kerajinan",  value: "Kerajinan" },
-            { label: "👞  Alas Kaki",       value: "Alas Kaki"      },
+            { label: "🍽️  Makanan", value: "Makanan" },
+            { label: "🎨  Kerajinan", value: "Kerajinan" },
+            { label: "👞  Alas Kaki", value: "Alas Kaki" },
           ].map(({ label, value }) => (
             <button
               key={value}
