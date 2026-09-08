@@ -13,6 +13,7 @@ type View =
   | { page: 'catalog' }
   | { page: 'detail'; business: Umkm }
   | { page: 'form' }
+  | { page: 'about' }
 
 // ═══════════════════════════════════════════════════════════════
 // 2.  CONSTANTS
@@ -159,7 +160,7 @@ function CategoryBadge({ category, large = false }: { category: string; large?: 
 // ═══════════════════════════════════════════════════════════════
 
 /* ── Navbar ─────────────────────────────────────────────────── */
-function Navbar({ onRegister, onHome }: { onRegister: () => void; onHome: () => void }) {
+function Navbar({ onRegister, onHome, onAbout }: { onRegister: () => void; onHome: () => void; onAbout: () => void }) {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const scrollTo = (id: string) => {
@@ -172,7 +173,7 @@ function Navbar({ onRegister, onHome }: { onRegister: () => void; onHome: () => 
   const NAV_LINKS = [
     { label: 'Beranda', action: () => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }); setMobileOpen(false) } },
     { label: 'Direktori', action: () => scrollTo('catalog-section') },
-    { label: 'Tentang Kami', action: () => scrollTo('footer-section') },
+    { label: 'Tentang Kami', action: () => { onAbout(); setMobileOpen(false) } },
   ]
 
   return (
@@ -354,12 +355,12 @@ function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => vo
       className="group bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer"
       onClick={onClick}
     >
-      <div className="relative h-48 overflow-hidden bg-slate-100">
+      <div className="relative aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-2 border-b border-slate-100">
         {business.foto_url ? (
-          <img src={business.foto_url} alt={`Foto ${business.nama_umkm}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <img src={business.foto_url} alt={`Foto ${business.nama_umkm}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-slate-200 text-slate-400">
-            <StoreIcon cls="w-12 h-12" />
+          <div className="w-full h-full flex items-center justify-center text-slate-300">
+            <StoreIcon cls="w-16 h-16" />
           </div>
         )}
         <div className="absolute top-3 left-3"><CategoryBadge category={business.kategori} /></div>
@@ -413,7 +414,7 @@ function CTABanner({ onRegister }: { onRegister: () => void }) {
 }
 
 /* ── Footer ─────────────────────────────────────────── */
-function Footer({ onHome, onRegister }: { onHome: () => void; onRegister: () => void }) {
+function Footer({ onHome, onRegister, onAbout }: { onHome: () => void; onRegister: () => void; onAbout: () => void }) {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id)
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -444,7 +445,7 @@ function Footer({ onHome, onRegister }: { onHome: () => void; onRegister: () => 
                 <button onClick={() => scrollTo('catalog-section')} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Direktori UMKM</button>
               </li>
               <li>
-                <button onClick={() => scrollTo('footer-section')} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Tentang Kami</button>
+                <button onClick={onAbout} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Tentang Kami</button>
               </li>
               <li>
                 <button onClick={onRegister} className="transition-colors cursor-pointer hover:text-[#C5BFA0]">Daftarkan UMKM</button>
@@ -505,10 +506,11 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
 
   const onRegister = () => goTo({ page: 'form' })
   const onHome = () => { setSearch(''); setActiveFilter('Semua') }
+  const onAbout = () => goTo({ page: 'about' })
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar onRegister={onRegister} onHome={onHome} />
+      <Navbar onRegister={onRegister} onHome={onHome} onAbout={onAbout} />
       <HeroSection search={search} setSearch={setSearch} onRegister={onRegister} />
 
       <main id="catalog-section" className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
@@ -549,7 +551,7 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
       </main>
 
       <CTABanner onRegister={onRegister} />
-      <Footer onHome={onHome} onRegister={onRegister} />
+      <Footer onHome={onHome} onRegister={onRegister} onAbout={onAbout} />
     </div>
   )
 }
@@ -589,6 +591,15 @@ function MapPlaceholder({ address }: { address: string }) {
 function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View) => void }) {
   const [activeImg, setActiveImg] = useState(0)
   const [galleryActive, setGalleryActive] = useState(0)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsFullscreen(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   let waNum = business.whatsapp?.replace(/\D/g, '') ?? ''
   if (waNum.startsWith('0')) waNum = '62' + waNum.substring(1)
@@ -626,16 +637,19 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
         {/* Split layout */}
         <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start">
           {/* ── LEFT ── */}
-          <div>
-            <div className="rounded-2xl overflow-hidden bg-slate-200 aspect-video">
-              <img src={gallery[activeImg]?.url} alt={gallery[activeImg]?.caption} className="w-full h-full object-cover transition-all duration-300" />
+          <div className="min-w-0">
+            <div 
+              className="rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 aspect-square md:aspect-video cursor-pointer"
+              onClick={() => { setGalleryActive(activeImg); setIsFullscreen(true); }}
+              title="Klik untuk memperbesar"
+            >
+              <img src={gallery[activeImg]?.url} alt={gallery[activeImg]?.caption} className="w-full h-full object-contain transition-all duration-300" />
             </div>
             {gallery.length > 1 && (
-              <div className="flex gap-2 mt-3">
+              <div className="flex gap-2 mt-3 overflow-x-auto pb-2 snap-x scrollbar-hide">
                 {gallery.map((img, i) => (
                   <button key={i} onClick={() => setActiveImg(i)}
-                    className={`relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all cursor-pointer ${activeImg === i ? 'shadow-md opacity-100' : 'border-transparent opacity-60 hover:opacity-100'}`}
-                    style={activeImg === i ? { borderColor: '#748C5D' } : undefined}
+                    className={`relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all cursor-pointer snap-start ${activeImg === i ? 'shadow-md opacity-100 border-[#748C5D]' : 'border-transparent opacity-60 hover:opacity-100'}`}
                   >
                     <img src={img.url} alt={img.caption} className="w-full h-full object-cover" />
                   </button>
@@ -769,11 +783,20 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
 
         {/* Gallery Section */}
         {gallery.length > 0 && (
-          <div className="mt-12">
+          <div className="mt-12 min-w-0">
             <h2 className="font-display font-bold text-slate-900 text-xl mb-6">Galeri Foto</h2>
-            <div className="relative rounded-2xl overflow-hidden bg-slate-200 aspect-video mb-4 group">
-              <img src={gallery[galleryActive]?.url} alt={gallery[galleryActive]?.caption} className="w-full h-full object-cover" />
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+            <div 
+              className="relative rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 aspect-square md:aspect-video mb-4 group cursor-pointer"
+              onClick={() => setIsFullscreen(true)}
+              title="Klik untuk memperbesar"
+            >
+              <img src={gallery[galleryActive]?.url} alt={gallery[galleryActive]?.caption} className="w-full h-full object-contain" />
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                <span className="opacity-0 group-hover:opacity-100 bg-white/90 text-slate-900 px-4 py-2 rounded-xl font-semibold shadow-md transition-opacity flex items-center gap-2 transform scale-95 group-hover:scale-100 duration-200">
+                  <SearchIcon cls="w-4 h-4" /> Perbesar
+                </span>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 pointer-events-none">
                 <p className="text-white text-sm font-medium">{gallery[galleryActive]?.caption}</p>
                 <p className="text-white/60 text-xs">{galleryActive + 1} / {gallery.length}</p>
               </div>
@@ -803,6 +826,58 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
           </div>
         )}
       </div>
+
+      {/* Fullscreen Lightbox Modal */}
+      {isFullscreen && (
+        <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col backdrop-blur-md">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between p-4 sm:p-6 text-white">
+            <span className="text-sm font-medium opacity-70 bg-white/10 px-4 py-1.5 rounded-full">
+              {galleryActive + 1} / {gallery.length}
+            </span>
+            <button 
+              onClick={() => setIsFullscreen(false)} 
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+              title="Tutup (Esc)"
+            >
+              <XIcon cls="w-6 h-6" />
+            </button>
+          </div>
+          
+          {/* Main Image Container */}
+          <div className="flex-1 relative flex items-center justify-center p-2 sm:p-8 overflow-hidden" onClick={() => setIsFullscreen(false)}>
+            <img 
+              src={gallery[galleryActive]?.url} 
+              alt={gallery[galleryActive]?.caption} 
+              className="max-w-full max-h-full object-contain drop-shadow-2xl" 
+              onClick={(e) => e.stopPropagation()}
+            />
+            
+            {/* Navigation Arrows */}
+            {gallery.length > 1 && (
+              <>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); prevGallery(); }} 
+                  className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition-all cursor-pointer hover:scale-105"
+                >
+                  <ChevronLeftIcon cls="w-6 h-6 sm:w-8 sm:h-8" />
+                </button>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); nextGallery(); }} 
+                  className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-black/50 hover:bg-black/80 text-white flex items-center justify-center backdrop-blur-md border border-white/10 transition-all cursor-pointer hover:scale-105"
+                >
+                  <ChevronRightIcon cls="w-6 h-6 sm:w-8 sm:h-8" />
+                </button>
+              </>
+            )}
+          </div>
+          
+          {/* Caption */}
+          <div className="p-6 text-center text-white/90 text-sm">
+            {gallery[galleryActive]?.caption}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1269,7 +1344,72 @@ Bisa pesan via WhatsApp`}
 }
 
 // ═══════════════════════════════════════════════════════════════
-// 8.  ROOT
+// 8.  PAGE 4 — ABOUT PAGE
+// ═══════════════════════════════════════════════════════════════
+
+function AboutPage({ goTo }: { goTo: (v: View) => void }) {
+  const onHome = () => goTo({ page: 'catalog' })
+  const onRegister = () => goTo({ page: 'form' })
+  const onAbout = () => goTo({ page: 'about' })
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50">
+      <Navbar onRegister={onRegister} onHome={onHome} onAbout={onAbout} />
+      
+      <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-16">
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+          {/* Header Cover */}
+          <div className="h-48 md:h-64 relative" style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}>
+            <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
+            <div className="absolute inset-0 flex items-center justify-center flex-col text-center px-4">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold mb-4 bg-white/20 text-white backdrop-blur-sm border border-white/30 uppercase tracking-widest">
+                Proyek Akademik
+              </span>
+              <h1 className="font-display font-extrabold text-white text-3xl md:text-5xl tracking-tight">Tentang Proyek Ini</h1>
+            </div>
+          </div>
+
+          <div className="p-8 md:p-12">
+            <div className="prose prose-slate max-w-none">
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">Latar Belakang</h2>
+              <p className="text-slate-600 leading-relaxed mb-6">
+                Website Direktori UMKM Desa Mojopurno ini dikembangkan sebagai bagian dari <strong>Proyek Akademik Mata Kuliah Analisis dan Desain Perangkat Lunak (ADPL)</strong>. 
+                Tujuan utama proyek ini adalah untuk membantu mendigitalisasi dan mempromosikan Usaha Mikro, Kecil, dan Menengah (UMKM) yang ada di Desa Mojopurno, Kecamatan Ngawi, Jawa Timur, agar dapat menjangkau pasar yang lebih luas.
+              </p>
+
+              <h2 className="text-2xl font-bold text-slate-900 mb-4 mt-8">Tujuan Platform</h2>
+              <ul className="space-y-3 mb-6">
+                <li className="flex items-start gap-3 text-slate-600">
+                  <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
+                  <span>Memberikan wadah promosi digital secara gratis bagi seluruh pelaku usaha di Desa Mojopurno.</span>
+                </li>
+                <li className="flex items-start gap-3 text-slate-600">
+                  <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
+                  <span>Memudahkan masyarakat luar untuk menemukan potensi lokal mulai dari kuliner, kerajinan, hingga jasa yang ada di desa ini.</span>
+                </li>
+                <li className="flex items-start gap-3 text-slate-600">
+                  <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
+                  <span>Meningkatkan perekonomian desa melalui pemanfaatan teknologi informasi.</span>
+                </li>
+              </ul>
+
+              <div className="mt-12 p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                <p className="text-sm text-slate-500 font-medium mb-1">Dikembangkan oleh Tim Mahasiswa</p>
+                <p className="text-lg font-bold text-slate-900">Proyek Akademik ADPL</p>
+                <p className="text-xs text-slate-400 mt-2">&copy; {new Date().getFullYear()} Hak Cipta Dilindungi</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <Footer onHome={onHome} onRegister={onRegister} onAbout={onAbout} />
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 9.  ROOT
 // ═══════════════════════════════════════════════════════════════
 
 export default function Home() {
@@ -1282,5 +1422,6 @@ export default function Home() {
 
   if (view.page === 'detail') return <BusinessDetailPage business={view.business} goTo={goTo} />
   if (view.page === 'form') return <RegisterFormPage goTo={goTo} />
+  if (view.page === 'about') return <AboutPage goTo={goTo} />
   return <CatalogPage goTo={goTo} />
 }
