@@ -181,9 +181,7 @@ function Navbar({ onRegister, onHome, onAbout }: { onRegister: () => void; onHom
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <button onClick={() => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="flex items-center gap-2 cursor-pointer">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}>
-            <StoreIcon cls="w-4 h-4 text-white" />
-          </div>
+          <img src="/logo-kknt.png" alt="Logo KKNT" className="w-9 h-9 object-contain" />
           <span className="font-display font-extrabold text-slate-900 text-lg hidden sm:block">
             UMKM <span style={{ color: '#748C5D' }}>Mojopurno</span>
           </span>
@@ -279,7 +277,7 @@ function HeroSection({ search, setSearch, onRegister }: {
 
           {/* Subtitle */}
           <p className="animate-fade-up delay-2 text-slate-200 text-lg leading-relaxed mb-8 max-w-xl">
-            Jelajahi ratusan usaha lokal — dari kuliner tradisional, kerajinan tangan, hingga jasa profesional. Dukung ekonomi desa!
+            Beragam usaha lokal Desa Mojopurno, mulai dari kuliner, kerajinan, hingga berbagai produk dan jasa unggulan
           </p>
 
           {/* Search bar */}
@@ -393,13 +391,13 @@ function CTABanner({ onRegister }: { onRegister: () => void }) {
     <section style={{ backgroundColor: '#F3F2EB', borderTop: '1px solid #D4CEBC', borderBottom: '1px solid #D4CEBC' }}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
         <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-medium mb-4" style={{ backgroundColor: '#EAE7D8', color: '#8F845F' }}>
-          <StoreIcon cls="w-4 h-4" /> Punya UMKM?
+          <StoreIcon cls="w-4 h-4" /> Punya Usaha di Mojopurno?
         </div>
         <h2 className="font-display font-extrabold text-slate-900 text-2xl md:text-3xl mb-3">
-          Daftarkan Usaha Anda Secara Gratis
+          Mari Tumbuhkan UMKM Mojopurno Bersama
         </h2>
         <p className="text-slate-500 text-base max-w-lg mx-auto mb-6">
-          Bergabunglah dengan ratusan UMKM di Desa Mojopurno dan jangkau lebih banyak pelanggan.
+          Daftarkan usaha Anda secara gratis dan jadilah bagian dari direktori UMKM Desa Mojopurno.
         </p>
         <button
           onClick={onRegister}
@@ -427,12 +425,10 @@ function Footer({ onHome, onRegister, onAbout }: { onHome: () => void; onRegiste
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}>
-                <StoreIcon cls="w-4 h-4 text-white" />
-              </div>
+              <img src="/logo-kknt.png" alt="Logo KKNT" className="w-10 h-10 object-contain bg-white rounded-lg p-0.5" />
               <span className="font-display font-extrabold text-white text-lg">UMKM Mojopurno</span>
             </div>
-            <p className="text-sm leading-relaxed">Direktori resmi usaha mikro, kecil, dan menengah Desa Mojopurno, Kecamatan Ngawi, Jawa Timur.</p>
+            <p className="text-sm leading-relaxed">Direktori resmi usaha mikro, kecil, dan menengah Desa Mojopurno, Kecamatan Ngariboyo, Kabupaten Magetan.</p>
           </div>
 
           <div>
@@ -458,17 +454,23 @@ function Footer({ onHome, onRegister, onAbout }: { onHome: () => void; onRegiste
             <div className="space-y-3 text-sm">
               <div className="flex items-start gap-2">
                 <MapPinIcon cls="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#748C5D' } as React.CSSProperties} />
-                <span>Kantor Desa Mojopurno, Kec. Ngawi, Kab. Ngawi, Jawa Timur 63253</span>
+                <span>Kantor Desa Mojopurno, Kecamatan Ngariboyo, Kabupaten Magetan, Jawa Timur</span>
               </div>
-              <div className="flex items-center gap-2">
-                <PhoneIcon cls="w-4 h-4 flex-shrink-0" style={{ color: '#748C5D' } as React.CSSProperties} />
-                <span>+62 851-0000-0000</span>
-              </div>
+              <a href="https://wa.me/6281563586789" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group transition-all cursor-pointer">
+                <PhoneIcon cls="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: '#748C5D' } as React.CSSProperties} />
+                <span className="group-hover:text-white transition-colors">081563586789</span>
+              </a>
+              <a href="mailto:kkntmojopurno26@gmail.com" className="flex items-center gap-2 group transition-all cursor-pointer">
+                <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: '#748C5D' }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span className="group-hover:text-white transition-colors">kkntmojopurno26@gmail.com</span>
+              </a>
             </div>
           </div>
         </div>
         <div className="mt-10 pt-6 text-xs text-center" style={{ borderTop: '1px solid #2E2920', color: '#6B6250' }}>
-          &copy; {new Date().getFullYear()} Direktori UMKM Desa Mojopurno. Proyek Akademik — ADPL.
+          &copy; 2026 Direktori UMKM Desa Mojopurno. Dikembangkan oleh KKNT UNESA 2026.
         </div>
       </div>
     </footer>
@@ -482,6 +484,11 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
   const [activeFilter, setActiveFilter] = useState<Filter>('Semua')
   const [businesses, setBusinesses] = useState<Umkm[]>([])
   const [loading, setLoading] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [search, activeFilter])
 
   useEffect(() => {
     let mounted = true
@@ -503,6 +510,10 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
     const matchCat = activeFilter === 'Semua' || b.kategori.split(',').map(c => c.trim().toLowerCase()).includes(activeFilter.toLowerCase())
     return matchSearch && matchCat
   })
+
+  const itemsPerPage = 6
+  const totalPages = Math.ceil(filtered.length / itemsPerPage)
+  const paginatedBusinesses = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   const onRegister = () => goTo({ page: 'form' })
   const onHome = () => { setSearch(''); setActiveFilter('Semua') }
@@ -542,10 +553,51 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map(b => (
-              <BusinessCard key={b.id} business={b} onClick={() => goTo({ page: 'detail', business: b })} />
-            ))}
+          <div className="space-y-8">
+            <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto pb-6 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: 'none' }}>
+              {paginatedBusinesses.map(b => (
+                <div key={b.id} className="snap-start shrink-0 w-[85vw] sm:w-auto">
+                  <BusinessCard business={b} onClick={() => goTo({ page: 'detail', business: b })} />
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-center gap-2 mt-8">
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="p-2 rounded-lg border border-slate-200 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  <ChevronLeftIcon cls="w-5 h-5" />
+                </button>
+                
+                <div className="flex gap-1 overflow-x-auto max-w-[200px] sm:max-w-none" style={{ scrollbarWidth: 'none' }}>
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(i + 1)}
+                      className={`w-10 h-10 shrink-0 rounded-lg text-sm font-semibold transition-all cursor-pointer ${
+                        currentPage === i + 1 
+                          ? 'bg-[#748C5D] text-white shadow-md' 
+                          : 'text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="p-2 rounded-lg border border-slate-200 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors cursor-pointer"
+                >
+                  <ChevronRightIcon cls="w-5 h-5" />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </main>
@@ -605,8 +657,9 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
   if (waNum.startsWith('0')) waNum = '62' + waNum.substring(1)
   const waUrl = `https://wa.me/${waNum}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_umkm}.`)}`
 
-  const gallery = business.fotos?.length
-    ? business.fotos.map(url => ({ url, caption: 'Foto Produk' }))
+  const validFotos = business.fotos?.filter(url => typeof url === 'string' && url.trim() !== '') || []
+  const gallery = validFotos.length > 0
+    ? validFotos.map(url => ({ url, caption: 'Foto Produk' }))
     : [{ url: business.foto_url || 'https://via.placeholder.com/600x400?text=Tidak+Ada+Foto', caption: 'Foto Usaha' }]
 
   const prevGallery = () => setGalleryActive(i => (i - 1 + gallery.length) % gallery.length)
@@ -1161,31 +1214,6 @@ function RegisterFormPage({ goTo }: { goTo: (v: View) => void }) {
                   <textarea id="deskripsi" rows={3} value={form.deskripsi} onChange={update('deskripsi')} maxLength={500} placeholder="Jelaskan secara singkat mengenai produk atau jasa yang Anda tawarkan..." className={inputClass(errors.deskripsi) + ' resize-none'} />
                   {errors.deskripsi && <p className="mt-1 text-xs text-red-600">{errors.deskripsi}</p>}
                 </div>
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="block text-sm font-medium text-slate-700" htmlFor="tentang">
-                      Poin Unggulan Usaha
-                    </label>
-                    <span className="text-xs text-slate-400">Opsional</span>
-                  </div>
-                  <textarea
-                    id="tentang"
-                    rows={5}
-                    value={form.tentang}
-                    onChange={update('tentang')}
-                    maxLength={800}
-                    placeholder={`Tulis satu poin per baris, contoh:
-Produk 100% halal & organik
-Harga mulai Rp 5.000
-Pengiriman ke seluruh Ngawi
-Bisa pesan via WhatsApp`}
-                    className={inputClass() + ' resize-none font-mono text-xs leading-relaxed'}
-                  />
-                  <p className="mt-1.5 text-xs text-slate-400 flex items-center gap-1">
-                    <span className="inline-flex w-4 h-4 rounded-full items-center justify-center text-white text-[10px]" style={{ background: '#748C5D' }}>✓</span>
-                    Setiap baris akan tampil sebagai poin keunggulan di halaman profil usaha
-                  </p>
-                </div>
               </div>
             </div>
 
@@ -1362,41 +1390,49 @@ function AboutPage({ goTo }: { goTo: (v: View) => void }) {
           <div className="h-48 md:h-64 relative" style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}>
             <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }}></div>
             <div className="absolute inset-0 flex items-center justify-center flex-col text-center px-4">
+              <img src="/logo-kknt.png" alt="Logo KKNT UNESA" className="w-16 h-16 md:w-20 md:h-20 object-contain mb-3 bg-white/90 rounded-full p-2 shadow-lg" />
               <span className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold mb-4 bg-white/20 text-white backdrop-blur-sm border border-white/30 uppercase tracking-widest">
-                Proyek Akademik
+                KKNT UNESA 2026
               </span>
-              <h1 className="font-display font-extrabold text-white text-3xl md:text-5xl tracking-tight">Tentang Proyek Ini</h1>
+              <h1 className="font-display font-extrabold text-white text-3xl md:text-5xl tracking-tight">Tentang Kami</h1>
             </div>
           </div>
 
           <div className="p-8 md:p-12">
             <div className="prose prose-slate max-w-none">
-              <h2 className="text-2xl font-bold text-slate-900 mb-4">Latar Belakang</h2>
-              <p className="text-slate-600 leading-relaxed mb-6">
-                Website Direktori UMKM Desa Mojopurno ini dikembangkan sebagai bagian dari <strong>Proyek Akademik Mata Kuliah Analisis dan Desain Perangkat Lunak (ADPL)</strong>. 
-                Tujuan utama proyek ini adalah untuk membantu mendigitalisasi dan mempromosikan Usaha Mikro, Kecil, dan Menengah (UMKM) yang ada di Desa Mojopurno, Kecamatan Ngawi, Jawa Timur, agar dapat menjangkau pasar yang lebih luas.
+              <h2 className="text-2xl font-bold text-slate-900 mb-4">Tentang Direktori UMKM Mojopurno</h2>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                Direktori UMKM Mojopurno merupakan platform digital yang dikembangkan untuk mengenalkan dan mendata berbagai usaha mikro, kecil, dan menengah yang berada di Desa Mojopurno, Kecamatan Ngariboyo, Kabupaten Magetan.
+              </p>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                Kehadiran website ini diharapkan dapat memudahkan masyarakat dalam menemukan berbagai produk dan layanan lokal sekaligus membantu pelaku UMKM memperluas jangkauan informasi mengenai usahanya.
+              </p>
+              <p className="text-slate-600 leading-relaxed mb-8">
+                Platform ini merupakan bagian dari kontribusi <strong>KKNT UNESA 2026</strong> dalam mendukung digitalisasi dan pengembangan potensi UMKM Desa Mojopurno.
               </p>
 
-              <h2 className="text-2xl font-bold text-slate-900 mb-4 mt-8">Tujuan Platform</h2>
-              <ul className="space-y-3 mb-6">
+              <h2 className="text-2xl font-bold text-slate-900 mb-4 mt-8">Ikuti Kegiatan Kami</h2>
+              <p className="text-slate-600 leading-relaxed mb-4">
+                <strong>Kenali Lebih Dekat Perjalanan KKNT UNESA 2026</strong><br/>
+                Ikuti berbagai kegiatan, program, dan cerita perjalanan kami selama melaksanakan pengabdian di Desa Mojopurno melalui media sosial resmi KKNT:
+              </p>
+              <ul className="space-y-3 mb-8">
                 <li className="flex items-start gap-3 text-slate-600">
                   <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
-                  <span>Memberikan wadah promosi digital secara gratis bagi seluruh pelaku usaha di Desa Mojopurno.</span>
+                  <span><strong>Instagram:</strong> <a href="https://instagram.com/kknt.mojopurno" target="_blank" rel="noopener noreferrer" className="text-[#748C5D] hover:underline">@kknt.mojopurno</a></span>
                 </li>
                 <li className="flex items-start gap-3 text-slate-600">
                   <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
-                  <span>Memudahkan masyarakat luar untuk menemukan potensi lokal mulai dari kuliner, kerajinan, hingga jasa yang ada di desa ini.</span>
-                </li>
-                <li className="flex items-start gap-3 text-slate-600">
-                  <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
-                  <span>Meningkatkan perekonomian desa melalui pemanfaatan teknologi informasi.</span>
+                  <span><strong>TikTok:</strong> <a href="https://tiktok.com/@kknt.mojopurno" target="_blank" rel="noopener noreferrer" className="text-[#748C5D] hover:underline">@kknt.mojopurno</a></span>
                 </li>
               </ul>
 
               <div className="mt-12 p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center">
-                <p className="text-sm text-slate-500 font-medium mb-1">Dikembangkan oleh Tim Mahasiswa</p>
-                <p className="text-lg font-bold text-slate-900">Proyek Akademik ADPL</p>
-                <p className="text-xs text-slate-400 mt-2">&copy; {new Date().getFullYear()} Hak Cipta Dilindungi</p>
+                <p className="text-lg font-bold text-slate-900 mb-3">
+                  Bersama mengenalkan potensi desa, mendukung UMKM lokal, dan tumbuh bersama Mojopurno.
+                </p>
+                <p className="text-sm text-slate-500 font-medium mb-1">Dikembangkan oleh KKNT UNESA 2026</p>
+                <p className="text-sm text-slate-600">Universitas Negeri Surabaya &ndash; Desa Mojopurno, Kabupaten Magetan</p>
               </div>
             </div>
           </div>

@@ -51,8 +51,7 @@ export default function HeroSection() {
         <p
           className="animate-fade-up delay-200 text-[#5A5549] text-base md:text-lg leading-relaxed max-w-2xl"
         >
-          Jelajahi ratusan usaha lokal — dari kuliner tradisional, kerajinan
-          tangan, hingga jasa profesional. Dukung ekonomi desa, belanja lokal!
+          Beragam usaha lokal Desa Mojopurno, mulai dari kuliner, kerajinan, hingga berbagai produk dan jasa unggulan
         </p>
 
         {/* ── Search Bar ──────────────────────────────────── */}
