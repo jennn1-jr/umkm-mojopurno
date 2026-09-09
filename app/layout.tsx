@@ -10,8 +10,8 @@ const geistSans = Geist({
 export const metadata: Metadata = {
   title: 'Direktori UMKM Desa Mojopurno',
   description:
-    'Katalog lengkap usaha mikro, kecil, dan menengah di Desa Mojopurno, Ngawi, Jawa Timur.',
-  keywords: ['UMKM', 'Mojopurno', 'Ngawi', 'katalog', 'usaha lokal'],
+    'Katalog lengkap usaha mikro, kecil, dan menengah di Desa Mojopurno, Ngariboyo, Magetan, Jawa Timur.',
+  keywords: ['UMKM', 'Mojopurno', 'Magetan', 'Ngariboyo', 'katalog', 'usaha lokal'],
   openGraph: {
     title: 'Direktori UMKM Desa Mojopurno',
     description: 'Jelajahi usaha lokal Desa Mojopurno.',

@@ -182,7 +182,7 @@ function Navbar({ onRegister, onHome, onAbout }: { onRegister: () => void; onHom
         {/* Logo */}
         <button onClick={() => { onHome(); window.scrollTo({ top: 0, behavior: 'smooth' }) }} className="flex items-center gap-2 cursor-pointer">
           <img src="/logo-kknt.png" alt="Logo KKNT" className="w-9 h-9 object-contain" />
-          <span className="font-display font-extrabold text-slate-900 text-lg hidden sm:block">
+          <span className="font-display font-extrabold text-slate-900 text-base sm:text-lg">
             UMKM <span style={{ color: '#748C5D' }}>Mojopurno</span>
           </span>
         </button>
@@ -257,7 +257,7 @@ function HeroSection({ search, setSearch, onRegister }: {
   return (
     <section className="relative min-h-[540px] md:min-h-[600px] flex items-center overflow-hidden">
       {/* Background: Gunung Lawu */}
-      <img src={HERO_BG} alt="Pemandangan Gunung Lawu, Ngawi" className="absolute inset-0 w-full h-full object-cover" />
+      <img src={HERO_BG} alt="Pemandangan Gunung Lawu, Magetan" className="absolute inset-0 w-full h-full object-cover" />
       {/* Earthy overlay: dark brown → olive green */}
       <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(30,22,10,0.85) 0%, rgba(116,140,93,0.68) 100%)' }} />
 
@@ -266,7 +266,7 @@ function HeroSection({ search, setSearch, onRegister }: {
           {/* Badge lokasi */}
           <div className="animate-fade-up inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white rounded-full px-4 py-1.5 text-sm font-medium mb-5">
             <MapPinIcon cls="w-4 h-4 text-[#C5BFA0]" />
-            Desa Mojopurno, Ngawi, Jawa Timur
+            Desa Mojopurno, Ngariboyo, Magetan
           </div>
 
           {/* Headline */}
@@ -350,12 +350,12 @@ function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => vo
   return (
     <article
       id={`card-${business.id}`}
-      className="group bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer"
+      className="group bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col cursor-pointer flex-1 w-full"
       onClick={onClick}
     >
-      <div className="relative aspect-square overflow-hidden bg-slate-50 flex items-center justify-center p-2 border-b border-slate-100">
+      <div className="relative w-full aspect-[4/3] shrink-0 overflow-hidden bg-slate-100 flex items-center justify-center border-b border-slate-100">
         {business.foto_url ? (
-          <img src={business.foto_url} alt={`Foto ${business.nama_umkm}`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <img src={business.foto_url} alt={`Foto ${business.nama_umkm}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-slate-300">
             <StoreIcon cls="w-16 h-16" />
@@ -375,7 +375,7 @@ function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => vo
         </div>
         <button
           onClick={e => { e.stopPropagation(); onClick() }}
-          className="mt-2 w-full text-white rounded-xl py-2.5 text-sm font-semibold transition-all cursor-pointer"
+          className="mt-auto w-full text-white rounded-xl py-2.5 text-sm font-semibold transition-all cursor-pointer"
           style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}
         >
           Lihat Detail
@@ -554,9 +554,9 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
           </div>
         ) : (
           <div className="space-y-8">
-            <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto pb-6 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0" style={{ scrollbarWidth: 'none' }}>
+            <div className="flex sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto pb-6 snap-x snap-mandatory -mx-4 px-4 sm:mx-0 sm:px-0 items-stretch" style={{ scrollbarWidth: 'none' }}>
               {paginatedBusinesses.map(b => (
-                <div key={b.id} className="snap-start shrink-0 w-[85vw] sm:w-auto">
+                <div key={b.id} className="snap-start shrink-0 w-[280px] sm:w-auto flex flex-col">
                   <BusinessCard business={b} onClick={() => goTo({ page: 'detail', business: b })} />
                 </div>
               ))}
