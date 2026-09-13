@@ -272,7 +272,7 @@ function HeroSection({ search, setSearch, onRegister }: {
           {/* Headline */}
           <h1 className="animate-fade-up delay-1 font-display font-extrabold text-white text-4xl md:text-6xl leading-tight tracking-tight mb-4">
             Temukan Potensi Hebat<br />
-            <span style={{ color: '#C5BFA0' }}>UMKM Mojopurno</span>
+            UMKM <span style={{ color: '#C5BFA0' }}>Mojopurno</span>
           </h1>
 
           {/* Subtitle */}
@@ -371,7 +371,7 @@ function BusinessCard({ business, onClick }: { business: Umkm; onClick: () => vo
         <p className="text-sm text-slate-500 leading-relaxed line-clamp-2 flex-1 min-w-0">{business.deskripsi}</p>
         <div className="flex items-start gap-1.5 text-xs text-slate-400 min-w-0">
           <MapPinIcon cls="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" /> 
-          <span className="min-w-0 break-all">{business.lokasi}</span>
+          <span className="min-w-0 line-clamp-1">{business.alamat || business.lokasi}</span>
         </div>
         <button
           onClick={e => { e.stopPropagation(); onClick() }}
@@ -394,7 +394,7 @@ function CTABanner({ onRegister }: { onRegister: () => void }) {
           <StoreIcon cls="w-4 h-4" /> Punya Usaha di Mojopurno?
         </div>
         <h2 className="font-display font-extrabold text-slate-900 text-2xl md:text-3xl mb-3">
-          Mari Tumbuhkan UMKM Mojopurno Bersama
+          Mari Tumbuhkan UMKM <span style={{ color: '#748C5D' }}>Mojopurno</span> Bersama
         </h2>
         <p className="text-slate-500 text-base max-w-lg mx-auto mb-6">
           Daftarkan usaha Anda secara gratis dan jadilah bagian dari direktori UMKM Desa Mojopurno.
@@ -426,7 +426,7 @@ function Footer({ onHome, onRegister, onAbout }: { onHome: () => void; onRegiste
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img src="/logo-kknt.png" alt="Logo KKNT" className="w-10 h-10 object-contain bg-white rounded-lg p-0.5" />
-              <span className="font-display font-extrabold text-white text-lg">UMKM Mojopurno</span>
+              <span className="font-display font-extrabold text-white text-lg">UMKM <span style={{ color: '#C5BFA0' }}>Mojopurno</span></span>
             </div>
             <p className="text-sm leading-relaxed">Direktori resmi usaha mikro, kecil, dan menengah Desa Mojopurno, Kecamatan Ngariboyo, Kabupaten Magetan.</p>
           </div>
@@ -506,8 +506,19 @@ function CatalogPage({ goTo }: { goTo: (v: View) => void }) {
 
   const filtered = businesses.filter(b => {
     const q = search.toLowerCase()
-    const matchSearch = !q || b.nama_umkm.toLowerCase().includes(q) || b.deskripsi?.toLowerCase().includes(q) || b.lokasi?.toLowerCase().includes(q)
-    const matchCat = activeFilter === 'Semua' || b.kategori.split(',').map(c => c.trim().toLowerCase()).includes(activeFilter.toLowerCase())
+    const matchSearch = !q || b.nama_umkm.toLowerCase().includes(q) || b.deskripsi?.toLowerCase().includes(q) || b.lokasi?.toLowerCase().includes(q) || b.kategori.toLowerCase().includes(q)
+    
+    const categories = b.kategori.split(',').map(c => c.trim().toLowerCase())
+    let matchCat = false
+    if (activeFilter === 'Semua') {
+      matchCat = true
+    } else if (activeFilter === 'Lainnya') {
+      const mainCats = ['makanan', 'kerajinan kulit', 'alas kaki']
+      matchCat = categories.some(c => !mainCats.includes(c) || c === 'lainnya')
+    } else {
+      matchCat = categories.includes(activeFilter.toLowerCase())
+    }
+
     return matchSearch && matchCat
   })
 
@@ -748,7 +759,7 @@ function BusinessDetailPage({ business, goTo }: { business: Umkm; goTo: (v: View
               <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_umkm}</h1>
               <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-2">
                 <MapPinIcon cls="w-4 h-4 text-slate-400 shrink-0 mt-0.5" /> 
-                <span className="flex-1 break-words">{business.lokasi}</span>
+                <span className="flex-1 break-words">{business.alamat || business.lokasi}</span>
               </div>
               <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-1.5">
                 <svg className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
