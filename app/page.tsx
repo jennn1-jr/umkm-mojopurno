@@ -1393,7 +1393,13 @@ function AboutPage({ goTo }: { goTo: (v: View) => void }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <Navbar onRegister={onRegister} onHome={onHome} onAbout={onAbout} />
+      <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+          <button onClick={() => goTo({ page: 'catalog' })} className="flex items-center gap-2 text-slate-600 font-medium text-sm transition-colors cursor-pointer hover:text-[#8F845F]">
+            <ArrowLeftIcon cls="w-4 h-4" /> Kembali ke Direktori
+          </button>
+        </div>
+      </nav>
       
       <main className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-16">
         <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
