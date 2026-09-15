@@ -9,6 +9,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ducanh2912/next-pwa": "^10.2.9",
+    "@vercel/analytics": "^2.0.1",
+    "lucide-react": "^1.46.0",
     "next": "16.3.2",
     "react": "19.2.8",
     "react-dom": "19.2.8"

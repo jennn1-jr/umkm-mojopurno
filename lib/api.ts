@@ -32,15 +32,15 @@ export async function fetchUmkmList(params?: {
 
     if (!res.ok) {
       console.error(`API responded with status ${res.status}`);
-      return [];
+      throw new Error(`API responded with status ${res.status}`);
     }
 
     const json: ApiResponse<Umkm[]> = await res.json();
     return json.data ?? [];
   } catch (error) {
-    // API is unreachable — return empty so the UI still renders
-    console.warn("Failed to fetch UMKM list:", error);
-    return [];
+    // API is unreachable — throw so the UI shows an error state
+    console.error("Failed to fetch UMKM list:", error);
+    throw error;
   }
 }
 
