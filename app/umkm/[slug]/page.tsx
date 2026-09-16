@@ -4,9 +4,10 @@ import { notFound } from 'next/navigation'
 import UmkmDetailClient from './client'
 import { Metadata } from 'next'
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
   const list = await fetchUmkmList()
-  const business = list.find(u => slugify(u.nama_umkm) === params.slug)
+  const business = list.find(u => slugify(u.nama_umkm) === slug)
   
   if (!business) return { title: 'UMKM Tidak Ditemukan' }
   
@@ -23,9 +24,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function UmkmDetailPage({ params }: { params: { slug: string } }) {
+export default async function UmkmDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
   const list = await fetchUmkmList()
-  const business = list.find(u => slugify(u.nama_umkm) === params.slug)
+  const business = list.find(u => slugify(u.nama_umkm) === slug)
   
   if (!business) return notFound()
 

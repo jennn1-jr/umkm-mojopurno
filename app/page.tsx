@@ -153,10 +153,25 @@ export default function CatalogPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [isHydrated, setIsHydrated] = useState(false)
 
+  // Hydrate from sessionStorage once on mount
   useEffect(() => {
-    setCurrentPage(1)
-  }, [search, activeFilter, sortBy])
+    setSearch(sessionStorage.getItem('cat_search') || '')
+    setActiveFilter((sessionStorage.getItem('cat_filter') as Filter) || 'Semua')
+    setSortBy((sessionStorage.getItem('cat_sort') as any) || 'terbaru')
+    setCurrentPage(Number(sessionStorage.getItem('cat_page')) || 1)
+    setIsHydrated(true)
+  }, [])
+
+  // Persist to sessionStorage on change
+  useEffect(() => {
+    if (!isHydrated) return
+    sessionStorage.setItem('cat_search', search)
+    sessionStorage.setItem('cat_filter', activeFilter)
+    sessionStorage.setItem('cat_sort', sortBy)
+    sessionStorage.setItem('cat_page', currentPage.toString())
+  }, [search, activeFilter, sortBy, currentPage, isHydrated])
 
   const loadData = useCallback(async () => {
     setLoading(true)
@@ -210,7 +225,7 @@ export default function CatalogPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <HeroSection search={search} setSearch={setSearch} totalUmkm={businesses.length} />
+      <HeroSection search={search} setSearch={(v) => { setSearch(v); setCurrentPage(1); }} totalUmkm={businesses.length} />
 
       <main id="catalog-section" className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -224,7 +239,7 @@ export default function CatalogPage() {
             <select 
               id="sort"
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value as any)}
+              onChange={(e) => { setSortBy(e.target.value as any); setCurrentPage(1); }}
               className="px-3 py-1.5 text-sm rounded-lg border border-slate-200 outline-none focus:border-[#8F845F]"
             >
               <option value="terbaru">Terbaru</option>
@@ -234,7 +249,7 @@ export default function CatalogPage() {
           </div>
         </div>
 
-        <FilterChips active={activeFilter} setActive={setActiveFilter} />
+        <FilterChips active={activeFilter} setActive={(f) => { setActiveFilter(f); setCurrentPage(1); }} />
 
         {loading ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">

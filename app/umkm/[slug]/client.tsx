@@ -39,9 +39,9 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
     <div className="min-h-screen bg-slate-50">
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-slate-600 font-medium text-sm transition-colors hover:text-[#8F845F]">
+          <button onClick={() => window.history.back()} className="flex items-center gap-2 text-slate-600 font-medium text-sm transition-colors hover:text-[#8F845F] cursor-pointer">
             <ArrowLeftIcon cls="w-4 h-4" /> Kembali ke Direktori
-          </Link>
+          </button>
           <div className="hidden sm:flex items-center gap-1.5 text-xs text-slate-400">
             <Link href="/" className="hover:text-[#8F845F]">Beranda</Link>
             <ChevronRightIcon cls="w-3 h-3" />

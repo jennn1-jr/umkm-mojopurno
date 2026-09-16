@@ -25,9 +25,13 @@ export async function fetchUmkmList(params?: {
     if (params?.kategori) {
       url.searchParams.set("kategori", params.kategori);
     }
+    
+    // Request a large number of items to bypass backend default pagination of 12
+    // since the frontend handles its own pagination natively.
+    url.searchParams.set("per_page", "1000");
 
     const res = await fetch(url.toString(), {
-      next: { revalidate: 60 }, // ISR: revalidate every 60 seconds
+      cache: 'no-store', // Always fetch fresh data to avoid missing new UMKMs
     });
 
     if (!res.ok) {
@@ -51,7 +55,7 @@ export async function fetchUmkmList(params?: {
 export async function fetchUmkmById(id: number): Promise<Umkm | null> {
   try {
     const res = await fetch(`${BASE_URL}/api/umkm/${id}`, {
-      next: { revalidate: 60 },
+      cache: 'no-store',
     });
 
     if (!res.ok) return null;
