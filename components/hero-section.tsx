@@ -2,6 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Image from "next/image";
+
+const IconRambak = (props: any) => <Image src="/icons/kerupuk kulit.svg" alt="Makanan" width={24} height={24} className={props.className} />;
+const IconSepatu = (props: any) => <Image src="/icons/sepatu kulit.svg" alt="Alas Kaki" width={24} height={24} className={`${props.className || ''} scale-[0.80]`} />;
+const IconKerajinan = (props: any) => <Image src="/icons/kerajinan kulit.svg" alt="Kerajinan" width={24} height={24} className={props.className} />;
 
 /**
  * HeroSection — Clean, earthy aesthetic matching the Figma design.
@@ -110,10 +115,10 @@ export default function HeroSection() {
         {/* ── Category chips ───────────────────────────────── */}
         <div className="animate-fade-up delay-400 flex flex-wrap justify-center gap-2 mt-1">
           {[
-            { label: "🍽️  Makanan", value: "Makanan" },
-            { label: "🎨  Kerajinan", value: "Kerajinan" },
-            { label: "👞  Alas Kaki", value: "Alas Kaki" },
-          ].map(({ label, value }) => (
+            { icon: IconRambak, label: "Makanan", value: "Makanan" },
+            { icon: IconKerajinan, label: "Kerajinan", value: "Kerajinan" },
+            { icon: IconSepatu, label: "Alas Kaki", value: "Alas Kaki" },
+          ].map(({ icon: Icon, label, value }) => (
             <button
               key={value}
               type="button"
@@ -124,11 +129,11 @@ export default function HeroSection() {
                 router.push(`/?${params.toString()}`);
               }}
               className="px-4 py-1.5 rounded-full border border-[#D4CEBC] bg-white/80
-                         text-[#5A5549] text-xs font-medium
+                         text-[#5A5549] text-xs font-medium flex items-center gap-2
                          hover:border-[#8F845F] hover:text-[#8F845F]
                          transition-colors duration-200 cursor-pointer"
             >
-              {label}
+              <Icon className="w-3.5 h-3.5" /> {label}
             </button>
           ))}
         </div>

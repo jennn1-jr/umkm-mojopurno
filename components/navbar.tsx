@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { XIcon, MenuIcon } from './icons'
+import { FaStore } from 'react-icons/fa6'
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -76,10 +77,10 @@ export default function Navbar() {
               <Link
                 href="/daftar"
                 onClick={() => setMobileOpen(false)}
-                className="block text-center w-full px-3 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer"
+                className="flex items-center justify-center gap-2 w-full px-3 py-2.5 rounded-lg text-sm font-semibold text-white cursor-pointer"
                 style={{ background: 'linear-gradient(135deg,#748C5D,#8F845F)' }}
               >
-                🏪 Daftarkan UMKM Saya
+                <FaStore className="w-4 h-4" /> Daftarkan UMKM Saya
               </Link>
             </div>
           </div>

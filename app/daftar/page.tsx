@@ -5,12 +5,14 @@ import Link from 'next/link'
 import { submitPendingUmkm } from '@/lib/api'
 import { ArrowLeftIcon, CheckCircleIcon, UploadIcon, ImageIcon, XIcon, WhatsAppIcon } from '@/components/icons'
 import Footer from '@/components/footer'
+import Image from 'next/image'
+import { FaInstagram, FaFacebook, FaTiktok } from 'react-icons/fa'
 
 const CATEGORY_OPTIONS = [
-  { value: 'Sentra Rambak Kulit', label: '🍘  Sentra Rambak Kulit' },
-  { value: 'Produksi Alas Kaki & Sepatu Kulit', label: '👞  Produksi Alas Kaki & Sepatu Kulit' },
-  { value: 'Kerajinan & Souvenir Kulit', label: '🎨  Kerajinan & Souvenir Kulit' },
-  { value: 'Lainnya', label: '📦  Lainnya' },
+  { value: 'Sentra Rambak Kulit', label: 'Sentra Rambak Kulit' },
+  { value: 'Produksi Alas Kaki & Sepatu Kulit', label: 'Produksi Alas Kaki & Sepatu Kulit' },
+  { value: 'Kerajinan & Souvenir Kulit', label: 'Kerajinan & Souvenir Kulit' },
+  { value: 'Lainnya', label: 'Lainnya' },
 ]
 
 interface FormState {
@@ -149,7 +151,7 @@ export default function RegisterFormPage() {
 
     const compressImage = async (file: File): Promise<Blob> => {
       return new Promise((resolve) => {
-        const img = new Image();
+        const img = new window.Image();
         img.onload = () => {
           const canvas = document.createElement('canvas');
           let width = img.width;
@@ -314,7 +316,7 @@ export default function RegisterFormPage() {
               <p className="text-xs text-slate-400 mb-4 ml-8">Opsional · Isi jika Anda memiliki akun di platform berikut</p>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <span className="text-xl w-7 text-center">🛒</span>
+                  <div className="w-7 flex justify-center"><Image src="/icons/shopee.svg" alt="Shopee" width={24} height={24} className="opacity-70" /></div>
                   <input
                     id="linkShopee" type="url" value={form.linkShopee} onChange={update('linkShopee')}
                     placeholder="https://shopee.co.id/tokoanda"
@@ -322,7 +324,7 @@ export default function RegisterFormPage() {
                   />
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xl w-7 text-center">🏪</span>
+                  <div className="w-7 flex justify-center"><Image src="/icons/tokopedia.svg" alt="Tokopedia" width={24} height={24} className="opacity-70" /></div>
                   <input
                     id="linkTokopedia" type="url" value={form.linkTokopedia} onChange={update('linkTokopedia')}
                     placeholder="https://tokopedia.com/tokoanda"
@@ -330,7 +332,7 @@ export default function RegisterFormPage() {
                   />
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xl w-7 text-center">📸</span>
+                  <div className="w-7 flex justify-center"><FaInstagram className="w-6 h-6 text-pink-500 opacity-80" /></div>
                   <input
                     id="linkInstagram" type="url" value={form.linkInstagram} onChange={update('linkInstagram')}
                     placeholder="https://instagram.com/akunanda"
@@ -338,7 +340,7 @@ export default function RegisterFormPage() {
                   />
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xl w-7 text-center">👥</span>
+                  <div className="w-7 flex justify-center"><FaFacebook className="w-6 h-6 text-blue-600 opacity-80" /></div>
                   <input
                     id="linkFacebook" type="url" value={form.linkFacebook} onChange={update('linkFacebook')}
                     placeholder="https://facebook.com/halamananda"
@@ -346,7 +348,7 @@ export default function RegisterFormPage() {
                   />
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-xl w-7 text-center">🎵</span>
+                  <div className="w-7 flex justify-center"><FaTiktok className="w-6 h-6 text-slate-800 opacity-80" /></div>
                   <input
                     id="linkTiktok" type="url" value={form.linkTiktok} onChange={update('linkTiktok')}
                     placeholder="https://tiktok.com/@akunanda"

@@ -1,6 +1,13 @@
 import type { Umkm, Kategori } from "@/lib/types";
 import UmkmMap from "./umkm-map";
 
+import { FaBox } from "react-icons/fa6";
+import Image from "next/image";
+
+const IconRambak = (props: any) => <Image src="/icons/kerupuk kulit.svg" alt="Makanan" width={24} height={24} className={props.className} />;
+const IconSepatu = (props: any) => <Image src="/icons/sepatu kulit.svg" alt="Alas Kaki" width={24} height={24} className={`${props.className || ''} scale-[0.80]`} />;
+const IconKerajinan = (props: any) => <Image src="/icons/kerajinan kulit.svg" alt="Kerajinan" width={24} height={24} className={props.className} />;
+
 const BADGE_STYLE: Record<string, string> = {
   Makanan: "bg-[#FFF5E6] text-[#A0622A] border-[#F5DEC2]",
   "Kerajinan Kulit": "bg-[#F0F4EC] text-[#4E6E3A] border-[#C9DAB8]",
@@ -8,11 +15,11 @@ const BADGE_STYLE: Record<string, string> = {
   Lainnya: "bg-[#F5F5F5] text-[#616161] border-[#E0E0E0]",
 };
 
-const BADGE_ICON: Record<string, string> = {
-  Makanan: "🍽️",
-  "Kerajinan Kulit": "🎨",
-  "Alas Kaki": "👞",
-  Lainnya: "📦",
+const BADGE_ICON: Record<string, React.ElementType> = {
+  Makanan: IconRambak,
+  "Kerajinan Kulit": IconKerajinan,
+  "Alas Kaki": IconSepatu,
+  Lainnya: FaBox,
 };
 
 const PHOTO_GRADIENT: Record<string, string> = {
@@ -54,22 +61,30 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
             className={`w-full h-full bg-gradient-to-br ${PHOTO_GRADIENT[categories[0]] ?? PHOTO_GRADIENT["Lainnya"]}
                         flex items-center justify-center`}
           >
-            <span className="text-5xl">{BADGE_ICON[categories[0]] ?? ""}</span>
+            <span className="text-white/70 flex items-center justify-center">
+              {(() => {
+                const Icon = BADGE_ICON[categories[0]] || BADGE_ICON["Lainnya"];
+                return <Icon className="w-16 h-16" />;
+              })()}
+            </span>
           </div>
         )}
 
         {/* Category badges */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 max-w-[90%]">
-          {categories.map((cat, idx) => (
-            <span
-              key={idx}
-              className={`inline-flex items-center gap-1
-                          px-2.5 py-1 rounded-full text-xs font-semibold border
-                          ${BADGE_STYLE[cat] ?? BADGE_STYLE["Lainnya"]}`}
-            >
-              {BADGE_ICON[cat] && <span>{BADGE_ICON[cat]}</span>} {cat}
-            </span>
-          ))}
+          {categories.map((cat, idx) => {
+            const Icon = BADGE_ICON[cat] || BADGE_ICON["Lainnya"];
+            return (
+              <span
+                key={idx}
+                className={`inline-flex items-center gap-1
+                            px-2.5 py-1 rounded-full text-xs font-semibold border
+                            ${BADGE_STYLE[cat] ?? BADGE_STYLE["Lainnya"]}`}
+              >
+                {Icon && <Icon className="w-3.5 h-3.5" />} {cat}
+              </span>
+            );
+          })}
         </div>
       </div>
 

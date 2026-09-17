@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
+import { FaInstagram, FaFacebook, FaTiktok } from 'react-icons/fa'
 import { Umkm } from '@/lib/types'
 import { ArrowLeftIcon, ChevronRightIcon, MapPinIcon, WhatsAppIcon, ShareIcon, SearchIcon, ChevronLeftIcon, XIcon } from '@/components/icons'
 import UmkmMap from '@/components/umkm-map'
@@ -151,27 +153,32 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
                 <div className="space-y-2">
                   {business.link_shopee && (
                     <a href={business.link_shopee} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-all group">
-                      <span className="text-lg">🛒</span><span className="text-sm font-medium text-slate-700 group-hover:text-orange-600">Shopee</span>
+                      <Image src="/icons/shopee.svg" alt="Shopee" width={24} height={24} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-orange-600">Shopee</span>
                     </a>
                   )}
                   {business.link_tokopedia && (
                     <a href={business.link_tokopedia} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-green-300 hover:bg-green-50 transition-all group">
-                      <span className="text-lg">🏪</span><span className="text-sm font-medium text-slate-700 group-hover:text-green-700">Tokopedia</span>
+                      <Image src="/icons/tokopedia.svg" alt="Tokopedia" width={24} height={24} className="opacity-80 group-hover:opacity-100 transition-opacity" />
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-green-700">Tokopedia</span>
                     </a>
                   )}
                   {business.link_instagram && (
                     <a href={business.link_instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-pink-300 hover:bg-pink-50 transition-all group">
-                      <span className="text-lg">📸</span><span className="text-sm font-medium text-slate-700 group-hover:text-pink-600">Instagram</span>
+                      <FaInstagram className="w-6 h-6 text-pink-500 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-pink-600">Instagram</span>
                     </a>
                   )}
                   {business.link_facebook && (
                     <a href={business.link_facebook} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-                      <span className="text-lg">👥</span><span className="text-sm font-medium text-slate-700 group-hover:text-blue-600">Facebook</span>
+                      <FaFacebook className="w-6 h-6 text-blue-600 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-blue-600">Facebook</span>
                     </a>
                   )}
                   {business.link_tiktok && (
                     <a href={business.link_tiktok} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3 py-2 rounded-xl border border-slate-200 hover:border-slate-400 hover:bg-slate-50 transition-all group">
-                      <span className="text-lg">🎵</span><span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">TikTok</span>
+                      <FaTiktok className="w-6 h-6 text-slate-900 group-hover:scale-110 transition-transform" />
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">TikTok</span>
                     </a>
                   )}
                 </div>

@@ -10,18 +10,24 @@ import Footer from '@/components/footer'
 import CTABanner from '@/components/cta-banner'
 import { MapPinIcon, SearchIcon, StoreIcon, ChevronLeftIcon, ChevronRightIcon, XIcon } from '@/components/icons'
 import CategoryBadge from '@/components/category-badge'
+import { FaBox } from "react-icons/fa6";
+import Image from "next/image";
 
-const CATEGORY_EMOJI: Record<string, string> = {
-  'Sentra Rambak Kulit': '🍘',
-  'Produksi Alas Kaki & Sepatu Kulit': '👞',
-  'Kerajinan & Souvenir Kulit': '🎨',
-  'Lainnya': '📦'
+const IconRambak = (props: any) => <Image src="/icons/kerupuk kulit.svg" alt="Sentra Rambak Kulit" width={24} height={24} className={props.className} />;
+const IconSepatu = (props: any) => <Image src="/icons/sepatu kulit.svg" alt="Produksi Alas Kaki & Sepatu Kulit" width={24} height={24} className={`${props.className || ''} scale-[0.80]`} />;
+const IconKerajinan = (props: any) => <Image src="/icons/kerajinan kulit.svg" alt="Kerajinan & Souvenir Kulit" width={24} height={24} className={props.className} />;
+
+const CATEGORY_ICON: Record<string, React.ElementType> = {
+  'Sentra Rambak Kulit': IconRambak,
+  'Produksi Alas Kaki & Sepatu Kulit': IconSepatu,
+  'Kerajinan & Souvenir Kulit': IconKerajinan,
+  'Lainnya': FaBox
 }
 
 const HERO_BG = '/hero-gunung-lawu.png'
 
-function HeroSection({ search, setSearch, totalUmkm }: {
-  search: string; setSearch: (v: string) => void; totalUmkm: number;
+function HeroSection({ search, setSearch, totalUmkm, totalKategori, totalDusun }: {
+  search: string; setSearch: (v: string) => void; totalUmkm: number; totalKategori: number; totalDusun: number;
 }) {
   return (
     <section className="relative min-h-[540px] md:min-h-[600px] flex items-center overflow-hidden">
@@ -67,8 +73,8 @@ function HeroSection({ search, setSearch, totalUmkm }: {
           <div className="animate-fade-up delay-4 flex flex-wrap gap-6 text-white text-sm">
             {[
               { val: totalUmkm.toString(), label: 'UMKM Terdaftar' },
-              { val: '4', label: 'Kategori Usaha' },
-              { val: '3', label: 'Dusun' },
+              { val: totalKategori.toString(), label: 'Kategori Usaha' },
+              { val: totalDusun.toString(), label: 'Dusun' },
             ].map(s => (
               <div key={s.val} className="flex items-center gap-2">
                 <span className="font-display font-extrabold text-2xl" style={{ color: '#C5BFA0' }}>{s.val}</span>
@@ -98,7 +104,10 @@ function FilterChips({ active, setActive }: { active: Filter; setActive: (f: Fil
             }`}
           style={active === f ? { background: 'linear-gradient(135deg,#748C5D,#8F845F)', boxShadow: '0 4px 12px rgba(143,132,95,0.30)' } : undefined}
         >
-          {f !== 'Semua' && CATEGORY_EMOJI[f]} {f}
+          {f !== 'Semua' && CATEGORY_ICON[f] && (() => {
+            const Icon = CATEGORY_ICON[f];
+            return <Icon className="inline mr-1 mb-0.5" />;
+          })()} {f}
         </button>
       ))}
     </div>
@@ -222,10 +231,43 @@ export default function CatalogPage() {
   const totalPages = Math.ceil(filtered.length / itemsPerPage)
   const paginatedBusinesses = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
+  // Calculate dynamic stats
+  const kategoriSet = new Set<string>()
+  const dusunSet = new Set<string>()
+
+  businesses.forEach(b => {
+    if (b.kategori) {
+      b.kategori.split(',').forEach(c => {
+        let cat = c.trim().toLowerCase()
+        // Standardize inconsistent DB entries to match our 4 main categories
+        if (cat === 'kerajinan kulit') cat = 'kerajinan & souvenir kulit'
+        if (cat === 'alas kaki') cat = 'produksi alas kaki & sepatu kulit'
+        if (cat === 'makanan' || cat === 'rambak') cat = 'sentra rambak kulit'
+        
+        if (cat) kategoriSet.add(cat)
+      })
+    }
+    
+    const text = `${b.lokasi || ''} ${b.alamat || ''}`.toLowerCase()
+    const match = text.match(/(?:dusun|dsn\.?)\s+([a-z]+)/)
+    if (match && match[1]) {
+      dusunSet.add(match[1])
+    }
+  })
+
+  const totalKategori = kategoriSet.size || 4
+  const totalDusun = dusunSet.size || 3
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <HeroSection search={search} setSearch={(v) => { setSearch(v); setCurrentPage(1); }} totalUmkm={businesses.length} />
+      <HeroSection 
+        search={search} 
+        setSearch={(v) => { setSearch(v); setCurrentPage(1); }} 
+        totalUmkm={businesses.length} 
+        totalKategori={totalKategori}
+        totalDusun={totalDusun}
+      />
 
       <main id="catalog-section" className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
