@@ -3,7 +3,7 @@
 // ==============================================
 import type { Umkm, ApiResponse, Kategori, UmkmPendingPayload } from "./types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://node-sg.acronet.work:1028";
 
 /**
  * Fetch the list of published UMKM entries from the API.
