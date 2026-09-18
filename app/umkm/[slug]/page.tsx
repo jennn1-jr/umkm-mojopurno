@@ -1,4 +1,4 @@
-import { fetchUmkmList } from '@/lib/api'
+import { fetchUmkmList, fetchUmkmById } from '@/lib/api'
 import { slugify } from '@/lib/utils'
 import { notFound } from 'next/navigation'
 import UmkmDetailClient from './client'
@@ -27,9 +27,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function UmkmDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const list = await fetchUmkmList()
-  const business = list.find(u => slugify(u.nama_umkm) === slug)
+  const businessShallow = list.find(u => slugify(u.nama_umkm) === slug)
   
-  if (!business) return notFound()
+  if (!businessShallow) return notFound()
+
+  // Ambil detail lengkap (karena API list tidak return field 'alamat')
+  const business = await fetchUmkmById(businessShallow.id) || businessShallow;
 
   return <UmkmDetailClient business={business} />
 }
