@@ -55,7 +55,7 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
       </nav>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start">
+        <div className="grid lg:grid-cols-[1fr_400px] gap-8 items-start">
           <div className="min-w-0">
             <div 
               className="rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 aspect-square md:aspect-video cursor-pointer"
@@ -105,7 +105,7 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
               <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_umkm}</h1>
               <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-2">
                 <MapPinIcon cls="w-4 h-4 text-slate-400 shrink-0 mt-0.5" /> 
-                <span className="flex-1 min-w-0 break-words break-all">{business.alamat || business.lokasi}</span>
+                <span className="flex-1 min-w-0" style={{ overflowWrap: 'anywhere' }}>{business.alamat || business.lokasi}</span>
               </div>
               <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-1.5">
                 <svg className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
