@@ -115,7 +115,7 @@ export default function UmkmCard({ umkm }: UmkmCardProps) {
               d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 001.144-.742 19.58 19.58 0 002.683-2.282c1.944-2.003 3.5-4.697 3.5-8.327a8 8 0 10-16 0c0 3.63 1.556 6.326 3.5 8.327a19.58 19.58 0 002.682 2.282 16.975 16.975 0 001.145.742zM12 13.5a3 3 0 100-6 3 3 0 000 6z"
             />
           </svg>
-          <span className="truncate">{umkm.lokasi}</span>
+          <span className="leading-snug">{umkm.lokasi}</span>
         </div>
 
         {/* Google Maps Embed */}

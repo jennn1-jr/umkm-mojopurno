@@ -99,13 +99,13 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
             </div>
           </div>
 
-          <div className="lg:sticky lg:top-24 space-y-4">
+          <div className="lg:sticky lg:top-24 space-y-4 min-w-0">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <CategoryBadge category={business.kategori} large />
               <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_umkm}</h1>
               <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-2">
                 <MapPinIcon cls="w-4 h-4 text-slate-400 shrink-0 mt-0.5" /> 
-                <span className="flex-1 break-words">{business.alamat || business.lokasi}</span>
+                <span className="flex-1 min-w-0 break-words break-all">{business.alamat || business.lokasi}</span>
               </div>
               <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-1.5">
                 <svg className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
