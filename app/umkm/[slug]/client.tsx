@@ -37,6 +37,23 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
   if (waNum.startsWith('0')) waNum = '62' + waNum.substring(1)
   const waUrl = `https://wa.me/${waNum}?text=${encodeURIComponent(`Halo, saya tertarik dengan ${business.nama_umkm}.`)}`
 
+  const renderProfileCard = (className: string = '') => (
+    <div className={`bg-white rounded-2xl border border-slate-200 p-6 ${className}`}>
+      <CategoryBadge category={business.kategori} large />
+      <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_umkm}</h1>
+      <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-2">
+        <MapPinIcon cls="w-4 h-4 text-slate-400 shrink-0 mt-0.5" /> 
+        <span className="flex-1 min-w-0" style={{ overflowWrap: 'anywhere' }}>{business.alamat || business.lokasi}</span>
+      </div>
+      <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-1.5">
+        <svg className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        </svg>
+        <span className="flex-1 break-words">Pemilik: <span className="font-medium text-slate-700">{business.nama_pemilik || '-'}</span></span>
+      </div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-slate-50">
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
@@ -76,6 +93,8 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
               </div>
             )}
 
+            {renderProfileCard("block lg:hidden mt-8")}
+
             <div className="mt-8 bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="font-display font-bold text-slate-900 text-lg mb-3">Tentang Usaha</h2>
               <p className="text-slate-600 leading-relaxed text-sm mb-4 whitespace-pre-wrap">{business.deskripsi}</p>
@@ -100,20 +119,7 @@ export default function UmkmDetailClient({ business }: { business: Umkm }) {
           </div>
 
           <div className="lg:sticky lg:top-24 space-y-4 min-w-0">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <CategoryBadge category={business.kategori} large />
-              <h1 className="font-display font-extrabold text-slate-900 text-2xl mt-3 mb-2 leading-tight">{business.nama_umkm}</h1>
-              <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-2">
-                <MapPinIcon cls="w-4 h-4 text-slate-400 shrink-0 mt-0.5" /> 
-                <span className="flex-1 min-w-0" style={{ overflowWrap: 'anywhere' }}>{business.alamat || business.lokasi}</span>
-              </div>
-              <div className="flex items-start gap-1.5 text-sm text-slate-500 mt-1.5">
-                <svg className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-                <span className="flex-1 break-words">Pemilik: <span className="font-medium text-slate-700">{business.nama_pemilik || '-'}</span></span>
-              </div>
-            </div>
+            {renderProfileCard("hidden lg:block")}
 
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <h3 className="font-semibold text-slate-900 text-sm mb-3 flex items-center gap-2">
