@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPinIcon, PhoneIcon } from './icons'
+import { MapPinIcon, PhoneIcon, InstagramIcon, TikTokIcon } from './icons'
 
 export default function Footer() {
   return (
@@ -48,6 +48,14 @@ export default function Footer() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <span className="group-hover:text-white transition-colors">kkntmojopurno26@gmail.com</span>
+              </a>
+              <a href="https://instagram.com/kknt.mojopurno" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group transition-all cursor-pointer">
+                <InstagramIcon cls="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: '#748C5D' } as React.CSSProperties} />
+                <span className="group-hover:text-white transition-colors">@kknt.mojopurno</span>
+              </a>
+              <a href="https://tiktok.com/@kknt.mojopurno" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group transition-all cursor-pointer">
+                <TikTokIcon cls="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: '#748C5D' } as React.CSSProperties} />
+                <span className="group-hover:text-white transition-colors">@kknt.mojopurno</span>
               </a>
             </div>
           </div>

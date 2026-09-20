@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeftIcon, CheckCircleIcon } from '@/components/icons'
+import { ArrowLeftIcon } from '@/components/icons'
 import Footer from '@/components/footer'
 
 export default function AboutPage() {
@@ -40,21 +40,6 @@ export default function AboutPage() {
                 Platform ini merupakan bagian dari kontribusi <strong>KKNT UNESA 2026</strong> dalam mendukung digitalisasi dan pengembangan potensi UMKM Desa Mojopurno.
               </p>
 
-              <h2 className="text-2xl font-bold text-slate-900 mb-4 mt-8">Ikuti Kegiatan Kami</h2>
-              <p className="text-slate-600 leading-relaxed mb-4">
-                <strong>Kenali Lebih Dekat Perjalanan KKNT UNESA 2026</strong><br/>
-                Ikuti berbagai kegiatan, program, dan cerita perjalanan kami selama melaksanakan pengabdian di Desa Mojopurno melalui media sosial resmi KKNT:
-              </p>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-start gap-3 text-slate-600">
-                  <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
-                  <span><strong>Instagram:</strong> <a href="https://instagram.com/kknt.mojopurno" target="_blank" rel="noopener noreferrer" className="text-[#748C5D] hover:underline">@kknt.mojopurno</a></span>
-                </li>
-                <li className="flex items-start gap-3 text-slate-600">
-                  <CheckCircleIcon cls="w-6 h-6 text-green-500 shrink-0" />
-                  <span><strong>TikTok:</strong> <a href="https://tiktok.com/@kknt.mojopurno" target="_blank" rel="noopener noreferrer" className="text-[#748C5D] hover:underline">@kknt.mojopurno</a></span>
-                </li>
-              </ul>
 
               <div className="mt-12 p-6 rounded-2xl bg-slate-50 border border-slate-100 text-center">
                 <p className="text-lg font-bold text-slate-900 mb-3">
