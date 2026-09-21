@@ -67,7 +67,7 @@ function SuccessState() {
           </p>
           <div className="rounded-xl p-4 mb-6 text-left text-xs space-y-1" style={{ backgroundColor: '#F3F2EB', color: '#8F845F' }}>
             <p>✅ Data masuk antrian verifikasi Admin</p>
-            <p>✅ Notifikasi WhatsApp akan dikirimkan</p>
+            <p>✅ Notifikasi antrian telah dikirimkan</p>
             <p>✅ Pendaftaran 100% gratis</p>
           </div>
           <Link
