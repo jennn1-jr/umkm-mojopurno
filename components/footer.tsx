@@ -39,7 +39,7 @@ export default function Footer() {
                 <MapPinIcon cls="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#748C5D' } as React.CSSProperties} />
                 <span>Kantor Desa Mojopurno, Kecamatan Ngariboyo, Kabupaten Magetan, Jawa Timur</span>
               </div>
-              <a href="https://wa.me/6281563586789" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group transition-all cursor-pointer">
+              <a href="https://wa.me/6285708803103" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group transition-all cursor-pointer">
                 <PhoneIcon cls="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: '#748C5D' } as React.CSSProperties} />
                 <span className="group-hover:text-white transition-colors">085708803103</span>
               </a>
