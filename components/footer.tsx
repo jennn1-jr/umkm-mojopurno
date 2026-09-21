@@ -41,7 +41,7 @@ export default function Footer() {
               </div>
               <a href="https://wa.me/6281563586789" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group transition-all cursor-pointer">
                 <PhoneIcon cls="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: '#748C5D' } as React.CSSProperties} />
-                <span className="group-hover:text-white transition-colors">081563586789</span>
+                <span className="group-hover:text-white transition-colors">085708803103</span>
               </a>
               <a href="mailto:kkntmojopurno26@gmail.com" className="flex items-center gap-2 group transition-all cursor-pointer">
                 <svg className="w-4 h-4 flex-shrink-0 group-hover:scale-110 transition-transform" style={{ color: '#748C5D' }} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
